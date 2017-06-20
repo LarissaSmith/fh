@@ -1,0 +1,41 @@
+{
+  "name": "fh",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --history-api-fallback --progress --inline --watch",
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geoctrl/time-is-money.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/geoctrl/time-is-money/issues"
+  },
+  "homepage": "https://github.com/geoctrl/time-is-money#readme",
+  "dependencies": {
+    "vue": "^2.3.4",
+    "vue-router": "^2.6.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^7.1.1",
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.0.0",
+    "babel-preset-env": "^1.5.2",
+    "css-loader": "^0.28.4",
+    "html-webpack-plugin": "^2.28.0",
+    "node-sass": "^4.5.3",
+    "postcss-loader": "^2.0.6",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.18.2",
+    "svg-inline-loader": "^0.7.1",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5"
+  }
+}
