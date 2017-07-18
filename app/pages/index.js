@@ -1,8 +1,8 @@
 import VueRouter from 'vue-router';
-import { HomeComponent } from './home/home.component';
+import { IndexingComponent } from './indexing/indexing.component';
 
 const routes = [
-  { path: '/', component: HomeComponent },
+  { path: '/', component: IndexingComponent },
 ];
 
 export const router = new VueRouter({

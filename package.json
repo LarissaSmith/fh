@@ -20,8 +20,10 @@
   },
   "homepage": "https://github.com/geoctrl/time-is-money#readme",
   "dependencies": {
+    "fs-styles": "fs-webdev/fs-styles",
     "vue": "^2.3.4",
-    "vue-router": "^2.6.0"
+    "vue-router": "^2.6.0",
+    "vuex": "^2.3.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.1",

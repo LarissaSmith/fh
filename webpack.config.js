@@ -45,7 +45,7 @@ module.exports = function() {
         include
       },
       {
-        test: /.scss$/,
+        test: /.styl/,
         loader: 'style-loader!css-loader!postcss-loader!sass-loader',
         include
       },
