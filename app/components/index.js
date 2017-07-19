@@ -1,3 +1,2 @@
-export { WindowSnapComponent } from './window-snap.component';
-export { EntryFormComponent } from './entry-form.component';
+export * from './entry';
 export { ImageViewComponent } from './image.component';

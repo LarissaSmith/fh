@@ -1,10 +1,68 @@
 .entry {
 	height: 100%;
-	padding: 20px;
 	background-color: #fff;
+	width: 300px;
+	overflow: auto;
 }
 
 .image-view {
 	background-color: #404040;
 	height: 100%;
+	flex-grow: 2;
+}
+
+.entry-field {
+	border-bottom: solid 1px #d3d3d3;
+	padding: 10px 14px;
+	cursor: text;
+	user-select: none;
+	position: relative;
+
+	label {
+		font-size: 12px;
+		color: #a3a3a3;
+		display: block;
+		margin: 0 0 2px 0;
+		cursor: text;
+	}
+
+	.entry-field__error {
+		font-size: 12px;
+		color: #f16458;
+		display: none;
+	}
+
+	.entry-field__input {
+		display: block;
+		width: 100%;
+		border: 0;
+		padding: 0 0 2px 0;
+
+		&:focus, &:active {
+			outline: none;
+		}
+	}
+
+	&.focus {
+		label {
+			color: #27c4f4;
+		}
+
+		&::after {
+			content: '';
+			position: absolute;
+			width: 4px;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			background-color: #27c4f4;
+		}
+	}
+
+	&.error {
+
+		.entry-field__error {
+			display: block;
+		}
+	}
 }
