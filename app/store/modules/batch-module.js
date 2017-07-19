@@ -5,11 +5,11 @@ export const batchModule = {
   state: mockBatchData,
   mutations: {
     blankAll(state) {
-      state.images.forEach((image, imageIndex) => {
+      state.images.forEach(image => {
         if (image.indexable) {
-          image.records.forEach((record, recordIndex) => {
-            record.fields.forEach((field, fieldIndex) => {
-              state.images[imageIndex].records[recordIndex].fields[fieldIndex].content = '<BLANK>';
+          image.records.forEach(record => {
+            record.fields.forEach(field => {
+              field.content = '<BLANK>';
             });
           });
         }
