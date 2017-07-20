@@ -1,0 +1,27 @@
+
+.btn {
+	border: none;
+	border-radius: 3px;
+	background-color: grey;
+	height: 32px;
+	padding: 0 10px;
+	font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+	transition: background-color 200ms ease, color 200ms ease;
+
+	&:focus {
+		outline: 0;
+	}
+}
+
+
+.caret {
+	display: inline-block;
+	width: 0;
+	height: 0;
+	margin-left: 2px;
+	vertical-align: middle;
+	border-top: 4px dashed;
+	border-top: 4px solid;
+	border-right: 4px solid transparent;
+	border-left: 4px solid transparent;
+}

@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
+import { TemplateService } from '../../services/template.service';
 
 export const EntryComponent = Vue.component('entry', {
   template:
@@ -8,15 +9,20 @@ export const EntryComponent = Vue.component('entry', {
         v-for="(fieldobj, index) in images[0].records[0].fields"
         :key="index"
         :fieldobj="fieldobj"
-        :properties="template(0)">
+        :properties="template"
+        :fieldIndex="index">
     </entry-field>
 </div>`,
 
   computed: {
       ...mapGetters([
-          'images',
-          'template'
+          'images'
       ])
+  },
+  data() {
+    return {
+      template: TemplateService.template[0].data
+    }
   },
   methods: {
     doThis() {

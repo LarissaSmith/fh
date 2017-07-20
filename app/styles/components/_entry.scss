@@ -1,3 +1,5 @@
+$purple: #996799;
+
 .entry {
 	height: 100%;
 	background-color: #fff;
@@ -24,12 +26,12 @@
 		display: block;
 		margin: 0 0 2px 0;
 		cursor: text;
+		transition: color 200ms ease;
 	}
 
 	.entry-field__error {
 		font-size: 12px;
 		color: #f16458;
-		display: none;
 	}
 
 	.entry-field__input {
@@ -43,19 +45,25 @@
 		}
 	}
 
+	&::after {
+		content: '';
+		position: absolute;
+		width: 4px;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		background-color: $purple;
+		transform: translate(-4px, 0);
+		transition: transform 200ms ease;
+	}
+
 	&.focus {
 		label {
-			color: #27c4f4;
+			color: $purple;
 		}
 
 		&::after {
-			content: '';
-			position: absolute;
-			width: 4px;
-			top: 0;
-			left: 0;
-			bottom: 0;
-			background-color: #27c4f4;
+			transform: translate(0, 0);
 		}
 	}
 
@@ -63,6 +71,58 @@
 
 		.entry-field__error {
 			display: block;
+		}
+	}
+}
+
+.entry-field__dropdown-btn {
+	position: absolute;
+	right: 14px;
+	top: 50%;
+	height: 24px;
+	width: 24px;
+	text-align: center;
+	padding: 0 2px 0 0;
+	margin-top: -12px;
+	background-color: #fff;
+	color: #c3c3c3;
+	cursor: pointer;
+
+	&:hover {
+		background-color: #e3e3e3;
+		color: #a3a3a3;
+	}
+
+	&:active {
+		background-color: $purple;
+		color: #fff;
+	}
+}
+
+.entry-field__dropdown {
+	position: absolute;
+	top: 100%;
+	left: 14px;
+	right: 14px;
+	margin-top: -2px;
+	background-color: #fff;
+	z-index: 99;
+	box-shadow: 0 6px 20px rgba(0,0,0,0.19), 0 2px 6px rgba(0,0,0,0.23);
+	border-radius: 0 0 3px 3px;
+	overflow: hidden;
+
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+
+		li {
+			padding: 4px 10px;
+
+			&.selected {
+				background-color: $purple;
+				color: #fff;
+			}
 		}
 	}
 }
