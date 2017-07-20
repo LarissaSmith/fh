@@ -6,6 +6,7 @@ import 'core-js/es6/promise';
 import 'core-js/es6/object';
 
 import './styles/main.scss';
+import { KeyService } from './services/key.service';
 import { router } from './pages';
 import { store } from './store';
 import * as components from './components';
@@ -13,9 +14,12 @@ import * as components from './components';
 Vue.use(Vuex);
 Vue.use(VueRouter);
 
+const appStore = new Vuex.Store(store);
+KeyService.init(appStore);
+
 new Vue({
   el: '#app',
-  store: new Vuex.Store(store),
+  store: appStore,
   router,
   components,
   template:

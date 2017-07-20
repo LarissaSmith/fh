@@ -1,9 +1,47 @@
-import { batchModule } from './modules/batch-module';
-import { focusModule } from './modules/focus-module';
+import { mockBatchData } from '../mock-batch-data';
 
 export const store = {
-  modules: {
-    batch: batchModule,
-    focus: focusModule
+  state: {
+    batch: mockBatchData,
+    focus: {
+      currentImage: 0,
+      currentRecord: 0,
+      currentField: 0
+    }
+  },
+  mutations: {
+    blankAll(state) {
+      state.batch.images.forEach(image => {
+        if (image.indexable) {
+          image.records.forEach(record => {
+            record.fields.forEach(field => {
+              field.content = '<BLANK>';
+            });
+          });
+        }
+      });
+    },
+    fieldForward(state) {
+      state.focus.currentField++;
+    },
+    fieldBack(state) {
+      state.focus.currentField--;
+    },
+    fieldSet(state, index) {
+      state.focus.currentField = index;
+    }
+  },
+  actions: {},
+  getters: {
+    images(state) {
+      return state.batch.images.filter(image => image.indexable);
+    },
+    recordCount() {
+
+    }
+
+  // modules: {
+  //   batch: batchModule,
+  //   focus: focusModule
   }
 };

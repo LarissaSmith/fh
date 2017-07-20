@@ -27,6 +27,11 @@ export const EntryFieldComponent = Vue.component('entryField', {
   watch: {
     'fieldobj.content': function(newContent) {
       this.$refs.input.textContent = newContent;
+    },
+    '$store.state.focus.currentField': function(newFieldIndex) {
+      if (newFieldIndex === this.fieldIndex) {
+        this.focus();
+      }
     }
   },
 
@@ -36,6 +41,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
       displayName: TemplateService.getFieldName(this.fieldIndex),
       dropdown: {
         active: false,
+        activeIndex: 0,
         list: [
           {label: 'item 1', type: 'history'},
           {label: 'item 2', type: 'history'},
@@ -55,6 +61,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
     onFocus() {
       this.selectText();
       this.inputHasFocus = true;
+      this.$store.commit('fieldSet', this.fieldIndex);
     },
     blur() {
       this.$refs.input.blur();
@@ -65,7 +72,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
       this.closeDropdown();
     },
     onKeyPress() {
-      console.log('here')
+      // console.log('here')
     },
     blank() {
       this.fieldobj.content = '<BLANK>';
@@ -97,10 +104,9 @@ export const EntryFieldComponent = Vue.component('entryField', {
       this.dropdown.active = false;
     },
     selectDropdownItem() {
-
     },
-    addDropdownItem() {
-
+    setActiveDropdownItem(listIndex) {
+      this.dropdown.activeIndex = listIndex;
     }
   }
 });
