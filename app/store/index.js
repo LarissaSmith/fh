@@ -31,13 +31,15 @@ export const store = {
       state.focus.currentField = index;
     }
   },
-  actions: {},
+  actions: {
+
+  },
   getters: {
     images(state) {
       return state.batch.images.filter(image => image.indexable);
     },
-    recordCount() {
-
+    currentRecord(state, getters) {
+      return getters.images[state.focus.currentImage].records[state.focus.currentRecord];
     }
 
   // modules: {

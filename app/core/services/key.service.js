@@ -1,4 +1,5 @@
-const TAB = 9;
+const TAB = 9,
+    ENTER = 13;
 
 class _KeyService {
   constructor() {
@@ -11,10 +12,20 @@ class _KeyService {
   }
 
   keyDown(e) {
+    let currentRecord = this.store.getters.currentRecord;
+    let currentField = this.store.state.focus.currentField;
+
     if (e.keyCode === TAB && e.shiftKey) {
       e.preventDefault();
-      this.store.commit('fieldBack');
+      if (currentField > 0) {
+        this.store.commit('fieldBack');
+      }
     } else if (e.keyCode === TAB) {
+      e.preventDefault();
+      if (currentField < (currentRecord.fields.length-1)) {
+        this.store.commit('fieldForward');
+      }
+    } else if (e.keyCode === ENTER) {
       e.preventDefault();
       this.store.commit('fieldForward');
     }

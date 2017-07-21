@@ -1,4 +1,4 @@
-import { mockTemplateData } from '../mock-template-data';
+import { mockTemplateData } from '../../mock-template-data';
 import _find from 'lodash/find';
 
 class _TemplateService {

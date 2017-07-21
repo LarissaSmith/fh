@@ -34,15 +34,32 @@ $purple: #996799;
 		color: #f16458;
 	}
 
+	.entry-field__input-wrapper {
+		position: relative;
+		margin-right: 30px;
+	}
+
 	.entry-field__input {
 		display: block;
 		width: 100%;
 		border: 0;
 		padding: 0 0 2px 0;
+		position: relative;
+		z-index: 0;
 
 		&:focus, &:active {
 			outline: none;
 		}
+	}
+
+	.entry-field__overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #fff;
+		z-index: 1;
 	}
 
 	&::after {
@@ -118,7 +135,7 @@ $purple: #996799;
 
 		li {
 			padding: 4px 10px;
-
+			cursor: pointer;
 
 			&.selected {
 				background-color: $purple;

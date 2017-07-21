@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
-import { TemplateService } from '../../services/template.service';
+import { TemplateService } from 'services/template.service';
 
 export const EntryComponent = Vue.component('entry', {
   template:
@@ -22,13 +22,6 @@ export const EntryComponent = Vue.component('entry', {
   data() {
     return {
       template: TemplateService.template[0].data
-    }
-  },
-  methods: {
-    doThis() {
-      // console.log(this.template(0))
-      // console.log(this.$store.state.template);
-      // console.log(this.images[0].records)
     }
   }
 });

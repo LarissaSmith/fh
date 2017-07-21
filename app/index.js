@@ -6,7 +6,7 @@ import 'core-js/es6/promise';
 import 'core-js/es6/object';
 
 import './styles/main.scss';
-import { KeyService } from './services/key.service';
+import { KeyService } from 'services/key.service';
 import { router } from './pages';
 import { store } from './store';
 import * as components from './components';

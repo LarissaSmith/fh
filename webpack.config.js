@@ -31,7 +31,9 @@ module.exports = function() {
   config.resolve = {
     extensions: ['.js', '.scss', '.html'],
     alias: {
-      vue: 'vue/dist/vue.js'
+      vue: 'vue/dist/vue.js',
+      services: path.resolve(__dirname, 'app', 'core', 'services'),
+      utils: path.resolve(__dirname, 'app', 'core', 'utils')
     }
   };
 

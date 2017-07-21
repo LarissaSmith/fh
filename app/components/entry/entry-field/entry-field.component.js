@@ -1,9 +1,14 @@
 import Vue from 'vue';
 import { EntryFieldTemplate } from './entry-field.template';
-import { TemplateService } from '../../services/template.service';
+import { TemplateService } from 'services/template.service';
+import { blankUnreadableMixin } from 'utils/blank-unreadable';
+
+const ESCAPE = 27,
+    ENTER = 13;
 
 export const EntryFieldComponent = Vue.component('entryField', {
   props: ['fieldobj', 'properties', 'fieldIndex'],
+  mixins: [blankUnreadableMixin],
   template: EntryFieldTemplate,
 
   mounted() {
@@ -39,6 +44,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
     return {
       inputHasFocus: false,
       displayName: TemplateService.getFieldName(this.fieldIndex),
+      storeBlankUnreadable: null,
       dropdown: {
         active: false,
         activeIndex: 0,
@@ -56,23 +62,33 @@ export const EntryFieldComponent = Vue.component('entryField', {
   methods: {
     focus() {
       this.$refs.input.focus();
-      this.onFocus();
     },
     onFocus() {
       this.selectText();
       this.inputHasFocus = true;
       this.$store.commit('fieldSet', this.fieldIndex);
+      if (this.fieldobj.content == '<BLANK>') {
+        this.storeBlankUnreadable = this.fieldobj.content;
+        this.fieldobj.content = '';
+      }
     },
     blur() {
       this.$refs.input.blur();
-      this.onBlur();
     },
     onBlur() {
       this.inputHasFocus = false;
       this.closeDropdown();
+      if (this.storeBlankUnreadable) {
+        this.fieldobj.content = this.storeBlankUnreadable;
+      }
     },
-    onKeyPress() {
-      // console.log('here')
+    onKeyPress(e) {
+      if (e.keyCode === ENTER && this.dropdown.active) {
+        e.preventDefault();
+        this.closeDropdown();
+      } else if (e.keyCode === ESCAPE && this.dropdown.active) {
+        this.closeDropdown();
+      }
     },
     blank() {
       this.fieldobj.content = '<BLANK>';
