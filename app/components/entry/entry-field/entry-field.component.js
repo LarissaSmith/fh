@@ -1,7 +1,11 @@
 import Vue from 'vue';
 import { EntryFieldTemplate } from './entry-field.template';
 import { TemplateService } from 'services/template.service';
+import { KeyService } from 'services/key.service';
+import { FocusService } from 'services/focus.service';
+import { ValidationService } from 'services/validation.service';
 import { blankUnreadableMixin } from 'utils/blank-unreadable';
+import { BLANK, UNREADABLE } from 'utils/constants';
 
 const ESCAPE = 27,
     ENTER = 13;
@@ -25,8 +29,9 @@ export const EntryFieldComponent = Vue.component('entryField', {
 
   destroyed() {
     this.$refs.input.removeEventListener('input', this.updateInput);
-    this.$refs.input.removeEventListener('focus', this.focus);
-    this.$refs.input.removeEventListener('blur', this.blur);
+    this.$refs.input.removeEventListener('focus', this.onFocus);
+    this.$refs.input.removeEventListener('blur', this.onBlur);
+    this.$refs.input.removeEventListener('keydown', this.onKeyPress);
   },
 
   watch: {
@@ -45,6 +50,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
       inputHasFocus: false,
       displayName: TemplateService.getFieldName(this.fieldIndex),
       storeBlankUnreadable: null,
+      lastKey: null,
       dropdown: {
         active: false,
         activeIndex: 0,
@@ -60,18 +66,28 @@ export const EntryFieldComponent = Vue.component('entryField', {
   },
 
   methods: {
+
+    /**
+     * Focus and focus handler
+     */
     focus() {
       this.$refs.input.focus();
     },
     onFocus() {
       this.selectText();
       this.inputHasFocus = true;
-      this.$store.commit('fieldSet', this.fieldIndex);
-      if (this.fieldobj.content == '<BLANK>') {
+      if (this.$store.state.focus.currentField !== this.fieldIndex) {
+        this.$store.commit('fieldSet', this.fieldIndex);
+      }
+      if (this.fieldobj.content === BLANK || this.fieldobj.content === UNREADABLE) {
         this.storeBlankUnreadable = this.fieldobj.content;
         this.fieldobj.content = '';
       }
     },
+
+    /**
+     * Blur & blur handler
+     */
     blur() {
       this.$refs.input.blur();
     },
@@ -82,17 +98,45 @@ export const EntryFieldComponent = Vue.component('entryField', {
         this.fieldobj.content = this.storeBlankUnreadable;
       }
     },
+
+    /**
+     * OnKeyPress
+     * handle custom actions beyond keyboard manager stuff
+     * @param e
+     */
     onKeyPress(e) {
+      // set previous field content
+      this.fieldobj.previousContent = e.target.textContent;
+
       if (e.keyCode === ENTER && this.dropdown.active) {
         e.preventDefault();
         this.closeDropdown();
-      } else if (e.keyCode === ESCAPE && this.dropdown.active) {
+      } if (e.keyCode === ESCAPE && this.dropdown.active) {
         this.closeDropdown();
       }
+
+      if (KeyService.isB(e)) {
+        e.preventDefault();
+        this.fieldobj.content = BLANK;
+        this.storeBlankUnreadable = null;
+        FocusService.nextField();
+      }
+
+      if (KeyService.isU(e)) {
+        e.preventDefault();
+        this.fieldobj.content = UNREADABLE;
+        this.storeBlankUnreadable = null;
+        FocusService.nextField();
+      }
+
+      if (KeyService.isBackspace(e) && !this.fieldobj.content && !this.fieldobj.previousContent) {
+        this.storeBlankUnreadable = '';
+      }
     },
-    blank() {
-      this.fieldobj.content = '<BLANK>';
-    },
+
+    /**
+     * Select Text
+     */
     selectText() {
       if (this.$refs.input.textContent.length && !this.inputHasFocus) {
         let range = document.createRange();
@@ -102,9 +146,20 @@ export const EntryFieldComponent = Vue.component('entryField', {
         sel.addRange(range);
       }
     },
+
+    /**
+     * Manually update the content (cuz contentEditable)
+     * @param e
+     */
     updateInput(e) {
-      this.openDropdown();
+      if (!this.dropdown.active) {
+        this.openDropdown();
+      }
       this.fieldobj.content = this.$refs.input.textContent;
+      if (this.fieldobj.content !== '' && this.storeBlankUnreadable) {
+        this.storeBlankUnreadable = '';
+      }
+      // console.log(this.fieldobj, this.properties)
     },
     toggleDropdown() {
       if (this.dropdown.active) {
@@ -126,3 +181,6 @@ export const EntryFieldComponent = Vue.component('entryField', {
     }
   }
 });
+
+
+

@@ -9,7 +9,7 @@ export const EntryComponent = Vue.component('entry', {
         v-for="(fieldobj, index) in images[0].records[0].fields"
         :key="index"
         :fieldobj="fieldobj"
-        :properties="template"
+        :properties="template[index]"
         :fieldIndex="index">
     </entry-field>
 </div>`,

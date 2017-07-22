@@ -1,11 +1,11 @@
-import { unreadable, blank } from './constants';
+import { BLANK, UNREADABLE } from './constants';
 import { lang } from './lang';
 
 export const blankUnreadable = function(term) {
-  if (blank === term) {
-    return lang('blank');
-  } else if (unreadable === term) {
-    return lang('unreadable');
+  if (BLANK === term) {
+    return lang['blank'];
+  } else if (UNREADABLE === term) {
+    return lang['unreadable'];
   } else {
     return term;
   }

@@ -10,12 +10,12 @@ export const store = {
     }
   },
   mutations: {
-    blankAll(state) {
+    fieldSetAll(state, term) {
       state.batch.images.forEach(image => {
         if (image.indexable) {
           image.records.forEach(record => {
             record.fields.forEach(field => {
-              field.content = '<BLANK>';
+              field.content = term;
             });
           });
         }

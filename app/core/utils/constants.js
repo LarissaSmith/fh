@@ -1,2 +1,2 @@
-export const blank = '<BLANK>';
-export const unreadable = '<UNREADABLE>';
+export const BLANK = '<BLANK>';
+export const UNREADABLE = '<UNREADABLE>';

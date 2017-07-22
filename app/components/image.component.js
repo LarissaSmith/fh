@@ -5,7 +5,7 @@ export const ImageViewComponent = Vue.component('imageView', {
 `<div class="image-view"><button v-on:click="blankAll()">blank all</button></div>`,
   methods: {
     blankAll() {
-      this.$store.commit('blankAll');
+      this.$store.commit('fieldSetAll', '<BLANK>');
     }
   }
 });
