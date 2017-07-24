@@ -1,14 +1,11 @@
 import Vue from 'vue';
 import { EntryFieldTemplate } from './entry-field.template';
-import { TemplateService } from 'services/template.service';
-import { KeyService } from 'services/key.service';
-import { FocusService } from 'services/focus.service';
-import { ValidationService } from 'services/validation.service';
-import { blankUnreadableMixin } from 'utils/blank-unreadable';
-import { BLANK, UNREADABLE } from 'utils/constants';
-
-const ESCAPE = 27,
-    ENTER = 13;
+import { TemplateService } from '../../../core/services/template.service';
+import { KeyService } from '../../../core/services/key.service';
+import { FocusService } from '../../../core/services/focus.service';
+import { ValidationService } from '../../../core/services/validation.service';
+import { blankUnreadableMixin } from '../../../core/utils/blank-unreadable';
+import { BLANK, UNREADABLE } from '../../../core/utils/constants';
 
 export const EntryFieldComponent = Vue.component('entryField', {
   props: ['fieldobj', 'properties', 'fieldIndex'],
@@ -37,6 +34,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
   watch: {
     'fieldobj.content': function(newContent) {
       this.$refs.input.textContent = newContent;
+      this.validateContent(newContent);
     },
     '$store.state.focus.currentField': function(newFieldIndex) {
       if (newFieldIndex === this.fieldIndex) {
@@ -59,8 +57,8 @@ export const EntryFieldComponent = Vue.component('entryField', {
           {label: 'item 2', type: 'history'},
           {label: 'item 3', type: 'history'},
           {label: 'item 4', type: 'history'},
-
-        ]
+        ],
+        typeahead: ['','']
       }
     }
   },
@@ -75,10 +73,10 @@ export const EntryFieldComponent = Vue.component('entryField', {
     },
     onFocus() {
       this.selectText();
-      this.inputHasFocus = true;
       if (this.$store.state.focus.currentField !== this.fieldIndex) {
         this.$store.commit('fieldSet', this.fieldIndex);
       }
+      this.inputHasFocus = true;
       if (this.fieldobj.content === BLANK || this.fieldobj.content === UNREADABLE) {
         this.storeBlankUnreadable = this.fieldobj.content;
         this.fieldobj.content = '';
@@ -101,36 +99,53 @@ export const EntryFieldComponent = Vue.component('entryField', {
 
     /**
      * OnKeyPress
-     * handle custom actions beyond keyboard manager stuff
+     * handle custom actions beyond KeyService stuff
      * @param e
      */
     onKeyPress(e) {
       // set previous field content
       this.fieldobj.previousContent = e.target.textContent;
 
-      if (e.keyCode === ENTER && this.dropdown.active) {
+      if (KeyService.isEnter(e) && this.dropdown.active) {
         e.preventDefault();
-        this.closeDropdown();
-      } if (e.keyCode === ESCAPE && this.dropdown.active) {
         this.closeDropdown();
       }
 
-      if (KeyService.isB(e)) {
+      if (KeyService.isEscape(e) && this.dropdown.active) {
+        this.closeDropdown();
+      }
+
+      if (KeyService.isCommandB(e)) {
         e.preventDefault();
         this.fieldobj.content = BLANK;
+        this.validateContent(this.fieldobj.content);
         this.storeBlankUnreadable = null;
         FocusService.nextField();
       }
 
-      if (KeyService.isU(e)) {
+      if (KeyService.isCommandU(e)) {
         e.preventDefault();
         this.fieldobj.content = UNREADABLE;
+        this.validateContent(this.fieldobj.content);
         this.storeBlankUnreadable = null;
         FocusService.nextField();
       }
 
       if (KeyService.isBackspace(e) && !this.fieldobj.content && !this.fieldobj.previousContent) {
+        this.validateContent(this.fieldobj.content);
         this.storeBlankUnreadable = '';
+      }
+
+      if (KeyService.isArrowUp(e) && this.dropdown.active) {
+        this.setActiveDropdownItem(this.dropdown.activeIndex-1);
+      }
+
+      if (KeyService.isArrowDown(e)) {
+        if (this.dropdown.active) {
+          this.setActiveDropdownItem(this.dropdown.activeIndex+1);
+        } else {
+          this.dropdown.active = true;
+        }
       }
     },
 
@@ -156,11 +171,18 @@ export const EntryFieldComponent = Vue.component('entryField', {
         this.openDropdown();
       }
       this.fieldobj.content = this.$refs.input.textContent;
+
       if (this.fieldobj.content !== '' && this.storeBlankUnreadable) {
         this.storeBlankUnreadable = '';
       }
-      // console.log(this.fieldobj, this.properties)
     },
+
+    validateContent(newContent) {
+      let {errorMsg, valid} = ValidationService.validateField(newContent || this.storeBlankUnreadable, this.fieldobj, this.properties);
+      this.fieldobj.errorMsg = errorMsg;
+      this.fieldobj.valid = valid;
+    },
+
     toggleDropdown() {
       if (this.dropdown.active) {
         this.closeDropdown();

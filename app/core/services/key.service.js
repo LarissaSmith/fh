@@ -1,5 +1,5 @@
-import { FocusService } from 'services/focus.service';
-import { BLANK, UNREADABLE } from 'utils/constants';
+import { FocusService } from './focus.service';
+import { BLANK, UNREADABLE } from '../utils/constants';
 
 const TAB = 9,
     ENTER = 13;
@@ -31,12 +31,12 @@ class _KeyService {
       FocusService.nextField();
     }
 
-    if (this.isCommandUp(e)) {
+    if (this.isCommandArrowUp(e)) {
       e.preventDefault();
       FocusService.previousField();
     }
 
-    if (this.isCommandDown(e)) {
+    if (this.isCommandArrowDown(e)) {
       e.preventDefault();
       FocusService.nextField();
     }
@@ -49,6 +49,10 @@ class _KeyService {
     if (this.isUShift(e)) {
       e.preventDefault();
       this.store.commit('fieldSetAll', UNREADABLE);
+    }
+
+    if (this.isArrowDown(e) || this.isArrowUp(e)) {
+      e.preventDefault();
     }
   }
 
@@ -64,7 +68,11 @@ class _KeyService {
     return e.key === 'Enter';
   }
 
-  isB(e) {
+  isEscape(e) {
+    return e.key === 'Escape';
+  }
+
+  isCommandB(e) {
     return e.key === 'b' && !e.shiftKey && (e.ctrlKey || e.metaKey);
   }
 
@@ -72,7 +80,7 @@ class _KeyService {
     return e.key === 'B' && e.shiftKey && (e.ctrlKey || e.metaKey);
   }
 
-  isU(e) {
+  isCommandU(e) {
     return e.key === 'u' && !e.shiftKey && (e.ctrlKey || e.metaKey);
   }
 
@@ -84,12 +92,20 @@ class _KeyService {
     return e.key === 'Backspace';
   }
 
-  isCommandUp(e) {
-    return e.key === 'ArrowUp' && (e.ctrlKey || e.metaKey)
+  isCommandArrowUp(e) {
+    return e.key === 'ArrowUp' && !e.shiftKey && (e.ctrlKey || e.metaKey);
   }
 
-  isCommandDown(e) {
-    return e.key === 'ArrowDown' && (e.ctrlKey || e.metaKey)
+  isCommandArrowDown(e) {
+    return e.key === 'ArrowDown' && !e.shiftKey && (e.ctrlKey || e.metaKey);
+  }
+
+  isArrowDown(e) {
+    return e.key === 'ArrowDown' && !e.shiftKey && !(e.ctrlKey || e.metaKey);
+  }
+
+  isArrowUp(e) {
+    return e.key === 'ArrowUp' && !e.shiftKey && !(e.ctrlKey || e.metaKey);
   }
 
 

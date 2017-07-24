@@ -1,4 +1,4 @@
-export const fr = {
+const fr = {
   "_LRM_PKTAG640": "indexing_93_102 - CHANGES-ONLY",
   "a-key": "indexation A",
   "accept": "Accepter",
@@ -191,7 +191,6 @@ export const fr = {
   "record_x_of_n": "Document %{0} sur %{1}",
   "reference_images": "Images de référence",
   "required": "Obligatoire",
-  "required_field_error": "Ce champ est obligatoire.",
   "return_to_web_indexing": "Retourner au progiciel d’indexation en ligne",
   "review_all_records_body": "Un lot ne peut pas être transmis si tous les documents et images n’ont pas été vérifiés au préalable. Assurez-vous que tous les renseignements ont été saisis correctement pour chaque document.",
   "review_all_records_button": "Revenir au lot",
@@ -279,5 +278,12 @@ export const fr = {
   "update_preference_message": "Ne plus afficher les instructions de ce projet.",
   "value_range_error": "Le champ %{0} ne peut contenir que des chiffres entre %{1} et %{2}.",
   "view_img_gallery": "Afficher la galerie d’images",
-  "yes": "Oui"
-}
+  "yes": "Oui",
+
+  "max_value_error": "Ce champ ne doit pas dépasser %{0}.",
+  "min_length_error": "Ce champ doit contenir au moins %{0} caractères.",
+  "min_value_error": "Ce champ ne doit pas être inférieur à %{0}.",
+  "required_field_error": "Ce champ est obligatoire.",
+};
+
+export default fr;

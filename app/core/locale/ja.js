@@ -1,4 +1,4 @@
-export const ja = {
+const ja = {
   "_LRM_PKTAG471": "indexing_94_104 - CHANGES-ONLY",
   "a-key": "A のキー",
   "accept": "承諾",
@@ -191,7 +191,6 @@ export const ja = {
   "record_x_of_n": "%{0} ／ %{1}の記録",
   "reference_images": "参照画像",
   "required": "必須",
-  "required_field_error": "このフィールドは必須フィールドです。",
   "return_to_web_indexing": "「ウェブ索引作成」に戻る",
   "review_all_records_body": "全ての画像と記録を確認するまで，バッチを提出することはできません。それぞれの記録を確認して，全ての情報が正しく記入されているか確かめてください。",
   "review_all_records_button": "バッチに戻る",
@@ -279,5 +278,13 @@ export const ja = {
   "update_preference_message": "今後このプロジェクトの指示を表示しない。",
   "value_range_error": "%{0} フィールドには%{1}から%{2}までの数字しか使えません。",
   "view_img_gallery": "画像ギャラリーの表示",
-  "yes": "はい"
-}
+  "yes": "はい",
+
+  "list_only_error": "このフィールドは，ドロップダウンリストから選択する必要があります。",
+  "max_value_error": "このフィールドの最大値は%{0}です。",
+  "min_length_error": "このフィールドには少なくとも%{0}文字以上必要です。",
+  "min_value_error": "このフィールドの最小値は%{0}です。",
+  "required_field_error": "このフィールドは必須フィールドです。",
+};
+
+export default ja;

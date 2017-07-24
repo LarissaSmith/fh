@@ -1,4 +1,4 @@
-export const de = {
+const de = {
   "_LRM_PKTAG770": "indexing_93_146 - CHANGES-ONLY",
   "a-key": "Index A",
   "accept": "Übernehmen",
@@ -191,7 +191,6 @@ export const de = {
   "record_x_of_n": "Eintrag %{0} von %{1}",
   "reference_images": "Referenzaufnahmen",
   "required": "Erforderlich",
-  "required_field_error": "Dieses Feld muss ausgefüllt werden.",
   "return_to_web_indexing": "Zur Indexierung im Internet zurückwechseln",
   "review_all_records_body": "Ein Satz kann nicht eingereicht werden, ehe nicht alle Aufnahmen und Einträge überprüft worden sind. Bitte überprüfen Sie jeden Eintrag, um sicherzustellen, dass alle Angaben richtig eingegeben wurden.",
   "review_all_records_button": "Zurück zum Satz",
@@ -279,5 +278,13 @@ export const de = {
   "update_preference_message": "Die Anweisungen für dieses Projekt nicht wieder anzeigen.",
   "value_range_error": "Das Feld „%{0}“ darf nur Zahlen zwischen %{1} und %{2} enthalten.",
   "view_img_gallery": "Bildergalerie ansehen",
-  "yes": "Ja"
-}
+  "yes": "Ja",
+
+  "max_value_error": "Dieses Feld erfordert einen Höchstwert von %{0}.",
+  "min_length_error": "Dieses Feld erfordert mindestens %{0} Zeichen.",
+  "min_value_error": "Dieses Feld erfordert einen Mindestwert von %{0}.",
+  "required_field_error": "Dieses Feld muss ausgefüllt werden.",
+
+};
+
+export default de;

@@ -1,4 +1,4 @@
-export const sv = {
+const sv = {
   "_LRM_PKTAG47": "indexing_93_109 - CHANGES-ONLY",
   "a-key": "A-nyckel",
   "accept": "Acceptera",
@@ -191,7 +191,6 @@ export const sv = {
   "record_x_of_n": "Uppteckning %{0} av %{1}",
   "reference_images": "Referensbilder",
   "required": "Obligatoriskt",
-  "required_field_error": "Det här fältet är ett obligatoriskt fält.",
   "return_to_web_indexing": "Gå tillbaka till Indexering via nätet",
   "review_all_records_body": "En bunt kan inte sändas in förrän alla bilder och uppteckningar har granskats. Vänligen granska alla uppteckningar för att tillse att alla uppgifter lagts in rätt.",
   "review_all_records_button": "Gå tillbaka till bunten",
@@ -279,5 +278,12 @@ export const sv = {
   "update_preference_message": "Visa inte instruktionerna igen för det här projektet.",
   "value_range_error": "Fältet %{0} får bara innehålla siffror mellan %{1} och %{2}.",
   "view_img_gallery": "Visa bildgalleri",
-  "yes": "Ja"
-}
+  "yes": "Ja",
+
+  "max_value_error": "Det här fältet får max ha värdet %{0}.",
+  "min_length_error": "Det här fältet måste ha minst %{0} tecken.",
+  "min_value_error": "Det här fältet måste som minst vara %{0}.",
+  "required_field_error": "Det här fältet är ett obligatoriskt fält."
+};
+
+export default sv;

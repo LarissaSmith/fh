@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
-import { TemplateService } from 'services/template.service';
+import { TemplateService } from '../../core/services/template.service';
 
 export const EntryComponent = Vue.component('entry', {
   template:

@@ -1,4 +1,4 @@
-export const pt = {
+const pt = {
   "_LRM_PKTAG216": "indexing_93_106 - CHANGES-ONLY",
   "a-key": "Chave A",
   "accept": "Aceitar",
@@ -191,7 +191,6 @@ export const pt = {
   "record_x_of_n": "Registro %{0} de %{1}",
   "reference_images": "Imagens para Referência",
   "required": "Obrigatório",
-  "required_field_error": "Este é um campo obrigatório.",
   "return_to_web_indexing": "Retornar à Indexação via Web",
   "review_all_records_body": "O lote não pode ser enviado até que todas as imagens e todos os registros tenham sido revisados. Revise cada um dos registros para certificar-se de que todas as informações foram digitadas corretamente.",
   "review_all_records_button": "Voltar para o Lote",
@@ -279,5 +278,12 @@ export const pt = {
   "update_preference_message": "Não mostrar as instruções deste projeto novamente.",
   "value_range_error": "O campo %{0} só pode conter números entre %{1} e %{2}.",
   "view_img_gallery": "Ver a Galeria de Imagem",
-  "yes": "Sim"
-}
+  "yes": "Sim",
+
+  "max_value_error": "Este campo requer o valor máximo %{0}.",
+  "min_length_error": "Este campo requer o mínimo de %{0} caracteres.",
+  "min_value_error": "Este campo requer o valor mínimo %{0}.",
+  "required_field_error": "Este é um campo obrigatório."
+};
+
+export default pt;

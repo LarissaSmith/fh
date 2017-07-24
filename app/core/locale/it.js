@@ -1,4 +1,4 @@
-export const it = {
+const it = {
   "_LRM_PKTAG934": "indexing_93_103 - CHANGES-ONLY",
   "a-key": "Indicizzatore A",
   "accept": "Accetta",
@@ -191,7 +191,6 @@ export const it = {
   "record_x_of_n": "Record %{0} di %{1}",
   "reference_images": "Immagini di riferimento",
   "required": "Obbligatorio",
-  "required_field_error": "Questo è un campo obbligatorio.",
   "return_to_web_indexing": "Ritorna a Indicizzazione sul web",
   "review_all_records_body": "Non si può inviare un batch fino a che tutte le immagini e tutti i record sono stati controllati. Controlla ciascun record per assicurarti che tutti i dati siano stati inseriti correttamente.",
   "review_all_records_button": "Ritorna al batch",
@@ -279,5 +278,12 @@ export const it = {
   "update_preference_message": "Non mostrare più le istruzioni per questo progetto",
   "value_range_error": "Il campo %{0} può contenere solo numeri compresi tra %{1} e %{2}.",
   "view_img_gallery": "Visualizza Galleria delle immagini",
-  "yes": "Sì"
-}
+  "yes": "Sì",
+
+  "max_value_error": "In questo campo va inserito un valore massimo di %{0}.",
+  "min_length_error": "In questo campo va inserito un minimo di %{0} caratteri.",
+  "min_value_error": "In questo campo va inserito un valore minimo di %{0}.",
+  "required_field_error": "Questo è un campo obbligatorio.",
+};
+
+export default it;

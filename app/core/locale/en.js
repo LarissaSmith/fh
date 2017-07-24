@@ -1,4 +1,4 @@
-export const en = {
+const en = {
   "image": "Image",
   "unableToLoadImageViewer": "Unable to load image. Try refreshing the browser.",
   "image-viewer-placeholder": "Image Viewer goes here.",
@@ -142,7 +142,6 @@ export const en = {
   "add_record_to_end":"New Record",
   "is_required": "The %{0} field is required.",
   "authorities_list_error": "The entered value is not found in the authorities list.",
-  "required_field_error": "This field is a required field.",
   "has_invalid_characters": "The %{0} field has invalid characters.",
   "character_length_error": "The %{0} field cannot exceed %{1} characters.",
   "value_range_error": "The %{0} field can only contain numbers between %{1} and %{2}.",
@@ -251,5 +250,14 @@ export const en = {
   "review_all_records_title": "Please Review All Records and Images",
   "review_all_records_body": "A batch cannot be submitted until all images and records have been reviewed. Please review each record to ensure that all information has been entered correctly.",
   "review_all_records_button": "Return to Batch",
-  "saved": "Saved: "
-}
+  "saved": "Saved: ",
+
+  "min_length_error": "This field requires a minimum of %{0} characters.",
+  "min_value_error": "This field requires a minimum value of %{0}.",
+  "max_value_error": "This field requires a maximum value of %{0}.",
+  "required_field_error": "This field is a required field.",
+  "list_only_error": "This field requires a value from the dropdown list."
+
+};
+
+export default en;

@@ -1,4 +1,4 @@
-export const pl = {
+const pl = {
   "_LRM_PKTAG820": "indexing_93_120 - CHANGES-ONLY",
   "a-key": "Klucz A",
   "accept": "Akceptuj",
@@ -191,7 +191,6 @@ export const pl = {
   "record_x_of_n": "Zapis %{0} z %{1}",
   "reference_images": "Zdjęcia do porównania",
   "required": "Wymagane",
-  "required_field_error": "To pole jest wymagane.",
   "return_to_web_indexing": "Wróć do Indeksowania on-line",
   "review_all_records_body": "Pliku nie można odesłać dopóki wszystkie zdjęcia i zapisy nie zostaną przejrzane. Przejrzyj każdy zapis, aby upewnić się, że wszystkie dane zostały wpisane prawidłowo.",
   "review_all_records_button": "Powrót do pliku",
@@ -279,5 +278,11 @@ export const pl = {
   "update_preference_message": "Nie pokazuj ponownie instrukcji do tego projektu.",
   "value_range_error": "Pole %{0} może zawierać jedynie liczby z zakresu od %{1} do %{2}.",
   "view_img_gallery": "Wyświetl galerię zdjęć",
-  "yes": "Tak"
-}
+  "yes": "Tak",
+  "max_value_error": "To pole ma wymaganą maksymalną wartość %{0}.",
+  "min_length_error": "To pole ma wymagane minimum %{0} znaków.",
+  "min_value_error": "To pole ma wymaganą minimalną wartość %{0}.",
+  "required_field_error": "To pole jest wymagane."
+};
+
+export default pl;

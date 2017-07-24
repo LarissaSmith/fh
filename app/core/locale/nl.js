@@ -1,4 +1,4 @@
-export const nl = {
+const nl = {
   "_LRM_PKTAG405": "indexing_94_110 - CHANGES-ONLY",
   "a-key": "Sleutel A",
   "accept": "Accepteren",
@@ -191,7 +191,6 @@ export const nl = {
   "record_x_of_n": "Vermelding %{0} van %{1}",
   "reference_images": "Referentieafbeeldingen",
   "required": "Vereist",
-  "required_field_error": "Dit veld is een verplicht veld",
   "return_to_web_indexing": "Terug naar webindexering",
   "review_all_records_body": "Een batch kan pas ingediend worden als alle afbeeldingen en vermeldingen gecontroleerd zijn. Gelieve elke vermelding te controleren en na te gaan of de gegevens correct zijn ingevoerd.",
   "review_all_records_button": "Terug naar batch",
@@ -279,5 +278,13 @@ export const nl = {
   "update_preference_message": "Instructies voor dit project niet meer weergeven.",
   "value_range_error": "Het veld %{0} kan alleen getallen tussen de %{1} en %{2} bevatten.",
   "view_img_gallery": "Afbeeldingengalerij bekijken",
-  "yes": "Ja"
-}
+  "yes": "Ja",
+
+  "list_only_error": "In dit veld moet een waarde uit de afrollijst komen.",
+  "max_value_error": "In dit veld moet een waarde van maximaal %{0} worden ingevuld.",
+  "min_length_error": "Dit veld moet ten minste %{0} tekens bevatten.",
+  "min_value_error": "In dit veld moet een waarde van minimaal %{0} worden ingevuld.",
+  "required_field_error": "Dit is een verplicht veld.",
+};
+
+export default nl;

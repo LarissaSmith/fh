@@ -1,4 +1,7 @@
-import { lang } from 'utils/lang';
+import { lang } from '../utils/lang';
+import { BLANK, UNREADABLE } from '../utils/constants';
+import _isNumber from 'lodash/isNumber';
+import _isArray from 'lodash/isArray';
 
 class _ValidationService {
 
@@ -13,14 +16,14 @@ class _ValidationService {
   maxValue(value, maxValue) {
     let valInt = parseInt(value);
     let maxInt = parseInt(maxValue);
-    if (!_.isNumber(valInt) || !_.isNumber(maxInt)) return false;
+    if (!_isNumber(valInt) || !_isNumber(maxInt)) return false;
     return valInt <= maxInt;
   }
 
   minValue(value, minValue) {
     let valInt = parseInt(value);
     let minInt = parseInt(minValue);
-    if (!_.isNumber(valInt) || !_.isNumber(minInt)) return false;
+    if (!_isNumber(valInt) || !_isNumber(minInt)) return false;
     return valInt >= minInt;
   }
 
@@ -44,16 +47,26 @@ class _ValidationService {
    * @param inputValue {String}
    * @param fieldObj {Object}
    * @param template {Object}
-   * @returns fieldObj {Object}
+   * @returns {Object}
    */
   validateField(inputValue, fieldObj, template) {
-
     if (!fieldObj || !template || !template.properties || !template.properties.property) {
       throw new Error('Cannot validate non-existent field object and properties');
     }
 
+    console.log(inputValue);
+
+    // don't validate <BLANK> or <UNREADABLE>
+    if (inputValue === BLANK || inputValue === UNREADABLE) {
+      return {
+        errorMsg: '',
+        valid: true
+      }
+    }
+
+
     let props = {};
-    if (_.isArray(template.properties.property)) {
+    if (_isArray(template.properties.property)) {
       template.properties.property.forEach(item => {
         props[item.type] = item.value;
       });
@@ -64,7 +77,7 @@ class _ValidationService {
     let errorMsg = '';
 
     // Required Field
-    if (fieldObj.isRequiredField) {
+    if (template.entryRequired) {
       let isValid = this.requiredField(inputValue);
       if (!isValid && !errorMsg) {
         errorMsg = lang['required_field_error'];
@@ -73,15 +86,9 @@ class _ValidationService {
 
     // no need to go further if there's no input
     if (!inputValue) {
-
-      // if there's an error
-      if (errorMsg) {
-        fieldObj.errorMsg = errorMsg;
-        fieldObj.valid = !errorMsg;
-        return fieldObj;
-
-      } else {
-        return fieldObj;
+      return {
+        errorMsg,
+        valid: !errorMsg
       }
     }
 
@@ -117,10 +124,10 @@ class _ValidationService {
       }
     }
 
-    fieldObj.errorMsg = errorMsg;
-    fieldObj.valid = !errorMsg;
-
-    return fieldObj;
+    return {
+      errorMsg,
+      valid: !errorMsg
+    };
   };
 
 }
