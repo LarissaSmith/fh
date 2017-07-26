@@ -26,10 +26,10 @@ class _KeyService {
       FocusService.nextField();
     }
 
-    if (this.isEnter(e)) {
-      e.preventDefault();
-      FocusService.nextField();
-    }
+    // if (this.isEnter(e)) {
+    //   e.preventDefault();
+    //   FocusService.nextField();
+    // }
 
     if (this.isCommandArrowUp(e)) {
       e.preventDefault();
@@ -106,6 +106,10 @@ class _KeyService {
 
   isArrowUp(e) {
     return e.key === 'ArrowUp' && !e.shiftKey && !(e.ctrlKey || e.metaKey);
+  }
+
+  isCommandShiftBackspace(e) {
+    return e.key === 'Backspace' && e.shiftKey &&  (e.ctrlKey || e.metaKey);
   }
 
 

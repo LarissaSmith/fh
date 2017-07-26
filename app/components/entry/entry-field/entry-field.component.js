@@ -5,7 +5,13 @@ import { KeyService } from '../../../core/services/key.service';
 import { FocusService } from '../../../core/services/focus.service';
 import { ValidationService } from '../../../core/services/validation.service';
 import { blankUnreadableMixin } from '../../../core/utils/blank-unreadable';
-import { BLANK, UNREADABLE } from '../../../core/utils/constants';
+import { SELECTED_LANG } from '../../../core/utils/lang';
+import normalizeInputData from 'utils/normalize-input-data';
+import * as constants from '../../../core/utils/constants';
+
+import _isBoolean from 'lodash/isBoolean';
+import _find from 'lodash/find';
+import _remove from 'lodash/remove';
 
 export const EntryFieldComponent = Vue.component('entryField', {
   props: ['fieldobj', 'properties', 'fieldIndex'],
@@ -35,11 +41,38 @@ export const EntryFieldComponent = Vue.component('entryField', {
     'fieldobj.content': function(newContent) {
       this.$refs.input.textContent = newContent;
       this.validateContent(newContent);
+      if (this.dropdown.active && this.showDropdown) {
+        this.updateDropdownList();
+      }
     },
     '$store.state.focus.currentField': function(newFieldIndex) {
       if (newFieldIndex === this.fieldIndex) {
         this.focus();
       }
+    }
+  },
+
+  computed: {
+    propertyMap() {
+      let map = {};
+      this.properties.properties.property.forEach(item => {
+        map[item.type] = item.value;
+      });
+      return map;
+    },
+    fieldType() {
+      if (this.propertyMap.alphaSet === 'selectionList' &&
+          !this.propertyMap.canAddValues) {
+        return constants.FIELD_TYPE_SELECT;
+      } else if (this.propertyMap.alphaSet === 'selectionList' &&
+          this.propertyMap.canAddValues) {
+        return constants.FIELD_TYPE_INPUT_SELECT;
+      } else {
+        return constants.FIELD_TYPE_INPUT;
+      }
+    },
+    showDropdown() {
+      return this.propertyMap.maintainHistory || this.fieldType !== constants.FIELD_TYPE_INPUT;
     }
   },
 
@@ -52,14 +85,11 @@ export const EntryFieldComponent = Vue.component('entryField', {
       dropdown: {
         active: false,
         activeIndex: 0,
-        list: [
-          {label: 'item 1', type: 'history'},
-          {label: 'item 2', type: 'history'},
-          {label: 'item 3', type: 'history'},
-          {label: 'item 4', type: 'history'},
-        ],
+        list: [],
         typeahead: ['','']
-      }
+      },
+      BLANK: constants.BLANK,
+      UNREADABLE: constants.UNREADABLE
     }
   },
 
@@ -74,10 +104,10 @@ export const EntryFieldComponent = Vue.component('entryField', {
     onFocus() {
       this.selectText();
       if (this.$store.state.focus.currentField !== this.fieldIndex) {
-        this.$store.commit('fieldSet', this.fieldIndex);
+        this.$store.commit('fieldSetIndex', this.fieldIndex);
       }
       this.inputHasFocus = true;
-      if (this.fieldobj.content === BLANK || this.fieldobj.content === UNREADABLE) {
+      if (this.fieldobj.content === constants.BLANK || this.fieldobj.content === constants.UNREADABLE) {
         this.storeBlankUnreadable = this.fieldobj.content;
         this.fieldobj.content = '';
       }
@@ -91,9 +121,14 @@ export const EntryFieldComponent = Vue.component('entryField', {
     },
     onBlur() {
       this.inputHasFocus = false;
-      this.closeDropdown();
+      if (this.showDropdown) {
+        this.closeDropdown();
+      }
       if (this.storeBlankUnreadable) {
         this.fieldobj.content = this.storeBlankUnreadable;
+      }
+      if (this.propertyMap.maintainHistory) {
+        this.addHistory();
       }
     },
 
@@ -106,18 +141,27 @@ export const EntryFieldComponent = Vue.component('entryField', {
       // set previous field content
       this.fieldobj.previousContent = e.target.textContent;
 
-      if (KeyService.isEnter(e) && this.dropdown.active) {
+      if (KeyService.isEnter(e)) {
         e.preventDefault();
-        this.closeDropdown();
+        if (this.dropdown.active && this.dropdown.list.length) {
+          if (this.showDropdown) {
+            this.selectDropdownItem();
+            this.closeDropdown();
+          }
+        } else {
+          FocusService.nextField();
+        }
       }
 
-      if (KeyService.isEscape(e) && this.dropdown.active) {
-        this.closeDropdown();
+      if (KeyService.isEscape(e) && this.showDropdown) {
+        if (this.dropdown.active) {
+          this.closeDropdown();
+        }
       }
 
       if (KeyService.isCommandB(e)) {
         e.preventDefault();
-        this.fieldobj.content = BLANK;
+        this.fieldobj.content = constants.BLANK;
         this.validateContent(this.fieldobj.content);
         this.storeBlankUnreadable = null;
         FocusService.nextField();
@@ -125,7 +169,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
 
       if (KeyService.isCommandU(e)) {
         e.preventDefault();
-        this.fieldobj.content = UNREADABLE;
+        this.fieldobj.content = constants.UNREADABLE;
         this.validateContent(this.fieldobj.content);
         this.storeBlankUnreadable = null;
         FocusService.nextField();
@@ -136,14 +180,25 @@ export const EntryFieldComponent = Vue.component('entryField', {
         this.storeBlankUnreadable = '';
       }
 
-      if (KeyService.isArrowUp(e) && this.dropdown.active) {
+      if (KeyService.isCommandShiftBackspace(e)) {
+        if (this.dropdown.active &&
+            this.dropdown.activeIndex > -1 &&
+            this.dropdown.list.length &&
+            this.dropdown.list[this.dropdown.activeIndex].type === 'history') {
+          e.preventDefault();
+          this.removeHistory();
+        }
+      }
+
+      if (KeyService.isArrowUp(e) && this.dropdown.active && this.showDropdown) {
         this.setActiveDropdownItem(this.dropdown.activeIndex-1);
       }
 
-      if (KeyService.isArrowDown(e)) {
+      if (KeyService.isArrowDown(e) && this.showDropdown) {
         if (this.dropdown.active) {
           this.setActiveDropdownItem(this.dropdown.activeIndex+1);
         } else {
+          this.updateDropdownList();
           this.dropdown.active = true;
         }
       }
@@ -167,7 +222,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
      * @param e
      */
     updateInput(e) {
-      if (!this.dropdown.active) {
+      if (!this.dropdown.active && this.showDropdown) {
         this.openDropdown();
       }
       this.fieldobj.content = this.$refs.input.textContent;
@@ -183,6 +238,30 @@ export const EntryFieldComponent = Vue.component('entryField', {
       this.fieldobj.valid = valid;
     },
 
+    addHistory() {
+      if (this.fieldobj.content &&
+          this.fieldobj.content !== constants.BLANK &&
+          this.fieldobj.content !== constants.UNREADABLE &&
+          this.fieldobj.content.length > 1) {
+        let check = _find(this.propertyMap[`${SELECTED_LANG}.listValues`], {
+          content: this.fieldobj.content
+        });
+
+        if (!(check && check.content)) {
+          this.propertyMap[`${SELECTED_LANG}.listValues`].push({
+            content: this.fieldobj.content
+          });
+        }
+      }
+    },
+
+    removeHistory() {
+      _remove(this.propertyMap[`${SELECTED_LANG}.listValues`], {
+        content: this.dropdown.list[this.dropdown.activeIndex].label
+      });
+      this.updateDropdownList();
+    },
+
     toggleDropdown() {
       if (this.dropdown.active) {
         this.closeDropdown();
@@ -195,10 +274,58 @@ export const EntryFieldComponent = Vue.component('entryField', {
     },
     closeDropdown() {
       this.dropdown.active = false;
+      this.dropdown.activeIndex = 0;
+    },
+    updateDropdownList() {
+      let input = this.fieldobj.content;
+      let history = [],
+          options = [];
+      if (this.propertyMap.maintainHistory) {
+        history = this.propertyMap[`${SELECTED_LANG}.listValues`].map(item => item.content);
+      }
+      if (this.fieldType === constants.FIELD_TYPE_SELECT || this.fieldType === constants.FIELD_TYPE_INPUT_SELECT) {
+        options = this.propertyMap[`${SELECTED_LANG}.listValues`].split(',');
+      }
+
+      options = options.map(item => {
+        return {
+          label: item,
+          type: 'option'
+        }
+      });
+
+      this.dropdown.list = history.map(item => {
+        return {
+          label: item,
+          type: 'history'
+        }
+      }).concat(options).filter(item => {
+        let isBlankUnreadable = item.label !== constants.BLANK && item.label !== constants.UNREADABLE;
+        let test;
+
+        if (true) {
+          let lastWordIndex = input.lastIndexOf(' ');
+          let testAgainst = false;
+          if (lastWordIndex > -1) {
+            testAgainst = input.substring(lastWordIndex).trim();
+          }
+          test = new RegExp(`^${normalizeInputData(!_isBoolean(testAgainst) ? testAgainst : input)}`, 'g');
+        } else {
+          test = new RegExp(`^${normalizeInputData(input)}`, 'g');
+        }
+        return !!item.label.match(test) && isBlankUnreadable;
+      });
     },
     selectDropdownItem() {
+      this.fieldobj.content = this.$refs.input.textContent = this.dropdown.list[this.dropdown.activeIndex].label;
+      this.storeBlankUnreadable = '';
     },
     setActiveDropdownItem(listIndex) {
+      if (listIndex === -2) {
+        listIndex = this.dropdown.list.length-1;
+      } else if (listIndex === this.dropdown.list.length) {
+        listIndex = -1;
+      }
       this.dropdown.activeIndex = listIndex;
     }
   }

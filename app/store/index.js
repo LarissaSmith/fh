@@ -27,13 +27,14 @@ export const store = {
     fieldBack(state) {
       state.focus.currentField--;
     },
-    fieldSet(state, index) {
+    fieldSetIndex(state, index) {
       state.focus.currentField = index;
+    },
+    fieldSet(state, content) {
+
     }
   },
-  actions: {
-
-  },
+  actions: {},
   getters: {
     images(state) {
       return state.batch.images.filter(image => image.indexable);

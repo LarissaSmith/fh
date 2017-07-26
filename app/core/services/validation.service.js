@@ -54,8 +54,6 @@ class _ValidationService {
       throw new Error('Cannot validate non-existent field object and properties');
     }
 
-    console.log(inputValue);
-
     // don't validate <BLANK> or <UNREADABLE>
     if (inputValue === BLANK || inputValue === UNREADABLE) {
       return {

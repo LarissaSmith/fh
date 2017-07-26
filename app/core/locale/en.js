@@ -4,7 +4,7 @@ const en = {
   "image-viewer-placeholder": "Image Viewer goes here.",
   "invalid_entry": "Unrecognized value. Review field help and double check your entry.",
   "add_record": "New Record",
-  "create_record": "Create Record",
+  "create_record": "Create Record %{0}",
   "new_record_question": "Do you see any more information on this image to index?",
   "accept": "Accept",
   "accept_all": "Accept All",
