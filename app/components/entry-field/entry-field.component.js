@@ -1,13 +1,11 @@
 import Vue from 'vue';
 import { EntryFieldTemplate } from './entry-field.template';
-import { TemplateService } from '../../../core/services/template.service';
-import { KeyService } from '../../../core/services/key.service';
-import { FocusService } from '../../../core/services/focus.service';
-import { ValidationService } from '../../../core/services/validation.service';
-import { blankUnreadableMixin } from '../../../core/utils/blank-unreadable';
-import { SELECTED_LANG } from '../../../core/utils/lang';
-import normalizeInputData from 'utils/normalize-input-data';
-import * as constants from '../../../core/utils/constants';
+import { TemplateService } from '../../core/services/template.service';
+import { KeyService } from '../../core/services/key.service';
+import { FocusService } from '../../core/services/focus.service';
+import { ValidationService } from '../../core/services/validation.service';
+import { blankUnreadableMixin, SELECTED_LANG, normalizeInputData } from '../../core/utils';
+import * as constants from '../../core/constants';
 
 import _isBoolean from 'lodash/isBoolean';
 import _find from 'lodash/find';
@@ -243,15 +241,21 @@ export const EntryFieldComponent = Vue.component('entryField', {
           this.fieldobj.content !== constants.BLANK &&
           this.fieldobj.content !== constants.UNREADABLE &&
           this.fieldobj.content.length > 1) {
-        let check = _find(this.propertyMap[`${SELECTED_LANG}.listValues`], {
-          content: this.fieldobj.content
-        });
 
-        if (!(check && check.content)) {
-          this.propertyMap[`${SELECTED_LANG}.listValues`].push({
-            content: this.fieldobj.content
-          });
-        }
+        let words = this.fieldobj.content.split(' ');
+        words.forEach(word => {
+          if (word.length > 1) {
+            let check = _find(this.propertyMap[`${SELECTED_LANG}.listValues`], {
+              content: word
+            });
+
+            if (!(check && check.content)) {
+              this.propertyMap[`${SELECTED_LANG}.listValues`].push({
+                content: word
+              });
+            }
+          }
+        });
       }
     },
 
@@ -317,7 +321,9 @@ export const EntryFieldComponent = Vue.component('entryField', {
       });
     },
     selectDropdownItem() {
-      this.fieldobj.content = this.$refs.input.textContent = this.dropdown.list[this.dropdown.activeIndex].label;
+      let lastSpace = this.fieldobj.content.lastIndexOf(' ');
+      console.log(this.fieldobj.content.slice(0, lastSpace+1) + this.dropdown.list[this.dropdown.activeIndex].label);
+      this.fieldobj.content = this.$refs.input.textContent = this.fieldobj.content.slice(0, lastSpace+1) + this.dropdown.list[this.dropdown.activeIndex].label;
       this.storeBlankUnreadable = '';
     },
     setActiveDropdownItem(listIndex) {

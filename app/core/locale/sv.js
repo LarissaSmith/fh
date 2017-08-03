@@ -1,4 +1,4 @@
-const sv = {
+const _sv = {
   "_LRM_PKTAG47": "indexing_93_109 - CHANGES-ONLY",
   "a-key": "A-nyckel",
   "accept": "Acceptera",
@@ -286,4 +286,4 @@ const sv = {
   "required_field_error": "Det här fältet är ett obligatoriskt fält."
 };
 
-export default sv;
+export const sv = _sv;

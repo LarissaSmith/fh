@@ -11,7 +11,6 @@
         <div class="entry-field__input" contenteditable="true" ref="input"></div>
         <div class="entry-field__overlay" v-show="!inputHasFocus && fieldobj.content">{{blankUnreadable(fieldobj.content)}}</div>
     </div>
-    <div class="entry-field__error" v-show="!fieldobj.valid">{{fieldobj.errorMsg}}</div>
     
     <!--dropdown things-->
     <button class="btn entry-field__dropdown-btn"
@@ -23,10 +22,11 @@
         <ul>
             <li :class="{selected: dropdown.activeIndex==index}"
                 v-for="(item, index) in dropdown.list"
-                @click="selectDropdownItem(item)"
+                @mousedown="selectDropdownItem(item)"
                 @mouseover="setActiveDropdownItem(index)">
                 {{item.label}}
             </li>
+            <li v-show="!dropdown.list.length">No Results</li>
         </ul>
     </div>
 </div>`;

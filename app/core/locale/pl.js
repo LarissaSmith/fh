@@ -1,4 +1,4 @@
-const pl = {
+const _pl = {
   "_LRM_PKTAG820": "indexing_93_120 - CHANGES-ONLY",
   "a-key": "Klucz A",
   "accept": "Akceptuj",
@@ -285,4 +285,4 @@ const pl = {
   "required_field_error": "To pole jest wymagane."
 };
 
-export default pl;
+export const pl = _pl;

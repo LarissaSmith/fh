@@ -1,4 +1,4 @@
-const ja = {
+const _ja = {
   "_LRM_PKTAG471": "indexing_94_104 - CHANGES-ONLY",
   "a-key": "A のキー",
   "accept": "承諾",
@@ -287,4 +287,4 @@ const ja = {
   "required_field_error": "このフィールドは必須フィールドです。",
 };
 
-export default ja;
+export const ja = _ja;

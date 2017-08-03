@@ -1,4 +1,4 @@
-const eo = {
+const _eo = {
   "a-key": "[Å Ķéý--- П國カ내]",
   "accept": "[Åççéþţ----- П國カ내]",
   "accept_all": "[Åççéþţ Åļļ------------- П國カ내]",
@@ -251,4 +251,4 @@ const eo = {
 
 };
 
-export default eo;
+export const eo = _eo;

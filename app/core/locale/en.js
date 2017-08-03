@@ -1,4 +1,4 @@
-const en = {
+const _en = {
   "image": "Image",
   "unableToLoadImageViewer": "Unable to load image. Try refreshing the browser.",
   "image-viewer-placeholder": "Image Viewer goes here.",
@@ -260,4 +260,4 @@ const en = {
 
 };
 
-export default en;
+export const en = _en;

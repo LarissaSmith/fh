@@ -1,5 +1,5 @@
 import { FocusService } from './focus.service';
-import { BLANK, UNREADABLE } from '../utils/constants';
+import { BLANK, UNREADABLE } from '../constants';
 
 const TAB = 9,
     ENTER = 13;

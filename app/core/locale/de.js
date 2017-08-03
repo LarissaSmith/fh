@@ -1,4 +1,4 @@
-const de = {
+const _de = {
   "_LRM_PKTAG770": "indexing_93_146 - CHANGES-ONLY",
   "a-key": "Index A",
   "accept": "Übernehmen",
@@ -287,4 +287,4 @@ const de = {
 
 };
 
-export default de;
+export const de = _de;

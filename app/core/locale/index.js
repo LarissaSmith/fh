@@ -1,14 +1,12 @@
-import de from './de';
-import en from './en';
-import eo from './eo';
-import es from './es';
-import fr from './fr';
-import it from './it';
-import ja from './ja';
-import nl from './nl';
-import pl from './pl';
-import pt from './pt';
-import ru from './ru';
-import sv from './sv';
-
-export { de, en, eo, es, fr, it, ja, nl, pl, pt, ru, sv }
+export { de } from './de';
+export { en } from './en';
+export { eo } from './eo';
+export { es } from './es';
+export { fr } from './fr';
+export { it } from './it';
+export { ja } from './ja';
+export { nl } from './nl';
+export { pl } from './pl';
+export { pt } from './pt';
+export { ru } from './ru';
+export { sv } from './sv';

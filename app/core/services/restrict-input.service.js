@@ -1,5 +1,4 @@
 
-
 class _RestrictInput {
 
   max(value, maxLength) {

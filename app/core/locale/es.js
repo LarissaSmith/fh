@@ -1,4 +1,4 @@
-const es = {
+const _es = {
   "_LRM_PKTAG268": "indexing_93_101 - CHANGES-ONLY",
   "a-key": "Índice A",
   "accept": "Aceptar",
@@ -251,4 +251,4 @@ const es = {
   "required_field_error": "Este campo es obligatorio.",
 };
 
-export default es;
+export const es = _es;

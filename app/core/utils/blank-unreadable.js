@@ -1,4 +1,4 @@
-import { BLANK, UNREADABLE } from './constants';
+import { BLANK, UNREADABLE } from '../constants';
 import { lang } from './lang';
 
 export const blankUnreadable = function(term) {

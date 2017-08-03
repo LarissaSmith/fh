@@ -1,5 +1,5 @@
 import { lang } from '../utils/lang';
-import { BLANK, UNREADABLE } from '../utils/constants';
+import { BLANK, UNREADABLE } from '../constants';
 import _isNumber from 'lodash/isNumber';
 import _isArray from 'lodash/isArray';
 

@@ -4,7 +4,8 @@ import { TemplateService } from '../../core/services/template.service';
 
 export const EntryComponent = Vue.component('entry', {
   template:
-`<div class="entry">
+`<div class="entry-form">
+    
     <entry-field
         v-for="(fieldobj, index) in images[0].records[0].fields"
         :key="index"
@@ -12,6 +13,15 @@ export const EntryComponent = Vue.component('entry', {
         :properties="template[index]"
         :fieldIndex="index">
     </entry-field>
+    
+    <div class="entry-question-block">
+        <p>See more people to index?</p>
+        <button class="btn">Add Entry 2</button>
+    </div>
+    <div class="entry-question-block">
+        <p>Ready to Submit?</p>
+        <button class="btn">Submit Batch</button>
+    </div>
 </div>`,
 
   computed: {

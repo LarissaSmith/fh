@@ -1,4 +1,4 @@
-const nl = {
+const _nl = {
   "_LRM_PKTAG405": "indexing_94_110 - CHANGES-ONLY",
   "a-key": "Sleutel A",
   "accept": "Accepteren",
@@ -287,4 +287,4 @@ const nl = {
   "required_field_error": "Dit is een verplicht veld.",
 };
 
-export default nl;
+export const nl = _nl;

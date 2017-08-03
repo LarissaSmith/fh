@@ -1,4 +1,4 @@
-const ru = {
+const _ru = {
   "_LRM_PKTAG690": "indexing_93_107 - CHANGES-ONLY",
   "a-key": "Вариант А",
   "accept": "Принять",
@@ -286,4 +286,4 @@ const ru = {
   "required_field_error": "Это поле обязательно для заполнения."
 };
 
-export default ru;
+export const ru = _ru;

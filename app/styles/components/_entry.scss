@@ -1,6 +1,7 @@
-$purple: #996799;
+$focus-color: $color-primary;
+$focus-color-light: lighten($focus-color, 44%);
 
-.entry {
+.entry-form {
 	height: 100%;
 	background-color: #fff;
 	width: 300px;
@@ -91,11 +92,6 @@ $purple: #996799;
 			background-color: #e3e3e3;
 			color: #a3a3a3;
 		}
-
-		&:active {
-			background-color: $purple;
-			color: #fff;
-		}
 	}
 
 	&:hover {
@@ -112,18 +108,28 @@ $purple: #996799;
 		top: 0;
 		left: 0;
 		bottom: 0;
-		background-color: $purple;
+		background-color: $focus-color;
 		transform: translate(-4px, 0);
 		transition: transform 200ms ease;
 	}
 
 	&.focus {
+		background-color: $focus-color-light;
 		label {
-			color: $purple;
+			color: $focus-color;
+		}
+
+		.entry-field__overlay {
+			background-color: $focus-color-light;
 		}
 
 		.entry-field__dropdown-btn {
 			display: block;
+			background-color: $focus-color-light;
+
+			&:hover {
+				background-color: #fff;
+			}
 		}
 
 		&::after {
@@ -160,9 +166,16 @@ $purple: #996799;
 			cursor: pointer;
 
 			&.selected {
-				background-color: $purple;
+				background-color: $focus-color;
 				color: #fff;
 			}
 		}
 	}
+}
+
+.entry-question-block {
+	font-size: 16px;
+	font-weight: 700;
+	padding: 20px;
+	border-bottom: solid 1px #d3d3d3;
 }

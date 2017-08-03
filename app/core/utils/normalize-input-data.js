@@ -1,3 +1,3 @@
-export default function(str) {
+export function normalizeInputData(str) {
   return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
 }

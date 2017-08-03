@@ -3,6 +3,7 @@ import { mockBatchData } from '../mock-batch-data';
 export const store = {
   state: {
     batch: mockBatchData,
+    errorList: [],
     focus: {
       currentImage: 0,
       currentRecord: 0,
@@ -29,9 +30,6 @@ export const store = {
     },
     fieldSetIndex(state, index) {
       state.focus.currentField = index;
-    },
-    fieldSet(state, content) {
-
     }
   },
   actions: {},
