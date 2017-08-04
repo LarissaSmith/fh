@@ -1,0 +1,2 @@
+export const iconMap = {"chevron-left":true,"chevron-right":true};
+export const svgSymbols = `<svg xmlns="http://www.w3.org/2000/svg" style="display: none;"><symbol id="chevron-left"><path d="M15.41 16.58 10.83 12 15.41 7.41 14 6 8 12 14 18 15.41 16.58Z"></path></symbol><symbol id="chevron-right"><path d="M8.59 16.58 13.17 12 8.59 7.41 10 6 16 12 10 18 8.59 16.58Z"></path></symbol></svg>`;

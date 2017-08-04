@@ -1,6 +1,7 @@
 import { mockBatchData } from '../mock-batch-data';
 
 export const store = {
+  // strict: true,
   state: {
     batch: mockBatchData,
     errorList: [],
@@ -28,8 +29,14 @@ export const store = {
     fieldBack(state) {
       state.focus.currentField--;
     },
-    fieldSetIndex(state, index) {
+    fieldSetFocusIndex(state, index) {
       state.focus.currentField = index;
+    },
+    fieldSet() {
+
+    },
+    recordSet(state, index) {
+      state.focus.currentRecord = index;
     }
   },
   actions: {},

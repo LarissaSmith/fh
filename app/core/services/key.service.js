@@ -54,6 +54,22 @@ class _KeyService {
     if (this.isArrowDown(e) || this.isArrowUp(e)) {
       e.preventDefault();
     }
+
+    if (this.isCommandArrowRight(e)) {
+      e.preventDefault();
+      let recordLength = this.store.getters.images[this.store.state.focus.currentImage].records.length;
+      if (this.store.state.focus.currentRecord < recordLength-1) {
+        this.store.commit('recordSet', this.store.state.focus.currentRecord+1);
+      }
+    }
+
+    if (this.isCommandArrowLeft(e)) {
+      e.preventDefault();
+      if (this.store.state.focus.currentRecord > 0) {
+        this.store.commit('recordSet', this.store.state.focus.currentRecord-1);
+      }
+
+    }
   }
 
   isTab(e) {
@@ -98,6 +114,14 @@ class _KeyService {
 
   isCommandArrowDown(e) {
     return e.key === 'ArrowDown' && !e.shiftKey && (e.ctrlKey || e.metaKey);
+  }
+
+  isCommandArrowLeft(e) {
+    return e.key === 'ArrowLeft' && !e.shiftKey && (e.ctrlKey || e.metaKey);
+  }
+
+  isCommandArrowRight(e) {
+    return e.key === 'ArrowRight' && !e.shiftKey && (e.ctrlKey || e.metaKey);
   }
 
   isArrowDown(e) {

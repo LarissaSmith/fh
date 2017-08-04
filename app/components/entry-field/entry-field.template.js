@@ -1,4 +1,5 @@
-  export const EntryFieldTemplate =
+
+export const EntryFieldTemplate =
 `<div class="entry-field"
       @click="focus()"
       :class="{'focus': $store.state.focus.currentField==fieldIndex}">

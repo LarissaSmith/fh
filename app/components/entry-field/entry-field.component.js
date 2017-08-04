@@ -4,8 +4,15 @@ import { TemplateService } from '../../core/services/template.service';
 import { KeyService } from '../../core/services/key.service';
 import { FocusService } from '../../core/services/focus.service';
 import { ValidationService } from '../../core/services/validation.service';
-import { blankUnreadableMixin, SELECTED_LANG, normalizeInputData } from '../../core/utils';
 import * as constants from '../../core/constants';
+
+import {
+  blankUnreadableMixin,
+  SELECTED_LANG,
+  normalizeInputData,
+  selectTextContentEditable,
+  cursorEndContentEditable
+} from '../../core/utils';
 
 import _isBoolean from 'lodash/isBoolean';
 import _find from 'lodash/find';
@@ -100,9 +107,11 @@ export const EntryFieldComponent = Vue.component('entryField', {
       this.$refs.input.focus();
     },
     onFocus() {
-      this.selectText();
+      if (this.$refs.input.textContent.length && !this.inputHasFocus) {
+        selectTextContentEditable(this.$refs.input);
+      }
       if (this.$store.state.focus.currentField !== this.fieldIndex) {
-        this.$store.commit('fieldSetIndex', this.fieldIndex);
+        this.$store.commit('fieldSetFocusIndex', this.fieldIndex);
       }
       this.inputHasFocus = true;
       if (this.fieldobj.content === constants.BLANK || this.fieldobj.content === constants.UNREADABLE) {
@@ -199,19 +208,6 @@ export const EntryFieldComponent = Vue.component('entryField', {
           this.updateDropdownList();
           this.dropdown.active = true;
         }
-      }
-    },
-
-    /**
-     * Select Text
-     */
-    selectText() {
-      if (this.$refs.input.textContent.length && !this.inputHasFocus) {
-        let range = document.createRange();
-        range.selectNodeContents(this.$refs.input);
-        let sel = window.getSelection();
-        sel.removeAllRanges();
-        sel.addRange(range);
       }
     },
 
@@ -325,6 +321,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
       console.log(this.fieldobj.content.slice(0, lastSpace+1) + this.dropdown.list[this.dropdown.activeIndex].label);
       this.fieldobj.content = this.$refs.input.textContent = this.fieldobj.content.slice(0, lastSpace+1) + this.dropdown.list[this.dropdown.activeIndex].label;
       this.storeBlankUnreadable = '';
+      cursorEndContentEditable(this.$refs.input);
     },
     setActiveDropdownItem(listIndex) {
       if (listIndex === -2) {
@@ -336,6 +333,3 @@ export const EntryFieldComponent = Vue.component('entryField', {
     }
   }
 });
-
-
-

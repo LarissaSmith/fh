@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';
+import { svgSymbols } from './components/icons/svg-symbols';
 
 import 'core-js/es6/promise';
 import 'core-js/es6/object';
@@ -32,5 +33,8 @@ new Vue({
   router,
   components,
   template:
-`<router-view></router-view>`
+`<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
+    ${svgSymbols}
+    <router-view></router-view>
+</div>`
 });
