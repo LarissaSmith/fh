@@ -183,6 +183,27 @@ $focus-color-light: lighten($focus-color, 44%);
 	font-weight: 700;
 	padding: 20px;
 	border-bottom: solid 1px #d3d3d3;
+	position: relative;
+
+	&::after {
+		content: '';
+		position: absolute;
+		width: 4px;
+		top: 0;
+		left: 0;
+		bottom: 0;
+		background-color: $focus-color;
+		transform: translate(-4px, 0);
+		transition: transform 200ms ease;
+	}
+
+	&.focus {
+		background-color: $focus-color-light;
+
+		&::after {
+			transform: translate(0, 0);
+		}
+	}
 
 	div {
 		margin-bottom: 10px;

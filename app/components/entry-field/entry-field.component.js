@@ -111,7 +111,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
         selectTextContentEditable(this.$refs.input);
       }
       if (this.$store.state.focus.currentField !== this.fieldIndex) {
-        this.$store.commit('fieldSetFocusIndex', this.fieldIndex);
+        this.$store.commit('fieldSetFocus', this.fieldIndex);
       }
       this.inputHasFocus = true;
       if (this.fieldobj.content === constants.BLANK || this.fieldobj.content === constants.UNREADABLE) {
@@ -156,7 +156,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
             this.closeDropdown();
           }
         } else {
-          FocusService.nextField();
+          FocusService.next();
         }
       }
 
@@ -171,7 +171,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
         this.fieldobj.content = constants.BLANK;
         this.validateContent(this.fieldobj.content);
         this.storeBlankUnreadable = null;
-        FocusService.nextField();
+        FocusService.next();
       }
 
       if (KeyService.isCommandU(e)) {
@@ -179,7 +179,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
         this.fieldobj.content = constants.UNREADABLE;
         this.validateContent(this.fieldobj.content);
         this.storeBlankUnreadable = null;
-        FocusService.nextField();
+        FocusService.next();
       }
 
       if (KeyService.isBackspace(e) && !this.fieldobj.content && !this.fieldobj.previousContent) {
@@ -310,6 +310,8 @@ export const EntryFieldComponent = Vue.component('entryField', {
             testAgainst = input.substring(lastWordIndex).trim();
           }
           test = new RegExp(`^${normalizeInputData(!_isBoolean(testAgainst) ? testAgainst : input)}`, 'g');
+
+          console.log(item.label.match(test));
         } else {
           test = new RegExp(`^${normalizeInputData(input)}`, 'g');
         }

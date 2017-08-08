@@ -18,6 +18,12 @@
 		height: 20px;
 		vertical-align: middle;
 		fill: #404040;
+		display: inline-block;
+	}
+
+	span {
+		vertical-align: middle;
+		display: inline-block;
 	}
 
 	&:hover {
@@ -51,6 +57,22 @@
 
 .btn.btn--lg {
 	font-size: 16px;
+}
+
+.btn--icon-left {
+	padding-left: 6px;
+
+	span {
+		padding-left: 2px;
+	}
+}
+
+.btn--icon-right {
+	padding-right: 6px;
+
+	span {
+		padding-right: 2px;
+	}
 }
 
 .caret {

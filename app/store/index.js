@@ -23,18 +23,17 @@ export const store = {
         }
       });
     },
-    fieldForward(state) {
-      state.focus.currentField++;
+    fieldSetFocus(state, term) {
+      state.focus.currentField = term;
     },
-    fieldBack(state) {
-      state.focus.currentField--;
+    recordSet(state, index) {
+      state.focus.currentRecord = index;
     },
-    fieldSetFocusIndex(state, index) {
-      state.focus.currentField = index;
-    },
-    fieldSet() {
 
+    imageSet(state, index) {
+      state.focus.currentImage = index;
     },
+
     recordSet(state, index) {
       state.focus.currentRecord = index;
     }

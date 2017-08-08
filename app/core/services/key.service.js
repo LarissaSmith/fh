@@ -18,27 +18,22 @@ class _KeyService {
 
     if (this.isTabShift(e)) {
       e.preventDefault();
-      FocusService.previousField();
+      FocusService.previous();
     }
 
     if (this.isTab(e)) {
       e.preventDefault();
-      FocusService.nextField();
+      FocusService.next();
     }
-
-    // if (this.isEnter(e)) {
-    //   e.preventDefault();
-    //   FocusService.nextField();
-    // }
 
     if (this.isCommandArrowUp(e)) {
       e.preventDefault();
-      FocusService.previousField();
+      FocusService.previous();
     }
 
     if (this.isCommandArrowDown(e)) {
       e.preventDefault();
-      FocusService.nextField();
+      FocusService.next();
     }
 
     if (this.isBShift(e)) {
