@@ -5,6 +5,7 @@ import { KeyService } from '../../core/services/key.service';
 import { FocusService } from '../../core/services/focus.service';
 import { ValidationService } from '../../core/services/validation.service';
 import * as constants from '../../core/constants';
+import { EventBus } from '../../core/event-bus';
 
 import {
   blankUnreadableMixin,
@@ -107,6 +108,10 @@ export const EntryFieldComponent = Vue.component('entryField', {
       this.$refs.input.focus();
     },
     onFocus() {
+      // handle changes without focusing/blurring
+      EventBus.$on(constants.$$ENTRY_ENTER, this.onEnter);
+      EventBus.$on(constants.$$ENTRY_LEAVE, this.onLeave);
+
       if (this.$refs.input.textContent.length && !this.inputHasFocus) {
         selectTextContentEditable(this.$refs.input);
       }
@@ -116,7 +121,13 @@ export const EntryFieldComponent = Vue.component('entryField', {
       this.inputHasFocus = true;
       if (this.fieldobj.content === constants.BLANK || this.fieldobj.content === constants.UNREADABLE) {
         this.storeBlankUnreadable = this.fieldobj.content;
-        this.fieldobj.content = '';
+        this.$store.dispatch('fieldSetProperty', {
+          image: this.$store.state.focus.currentImage,
+          record: this.$store.state.focus.currentRecord,
+          field: this.fieldIndex,
+          property: 'content',
+          value: ''
+        });
       }
     },
 
@@ -132,7 +143,51 @@ export const EntryFieldComponent = Vue.component('entryField', {
         this.closeDropdown();
       }
       if (this.storeBlankUnreadable) {
-        this.fieldobj.content = this.storeBlankUnreadable;
+        this.$store.dispatch('fieldSetProperty', {
+          image: this.$store.state.focus.currentImage,
+          record: this.$store.state.focus.currentRecord,
+          field: this.fieldIndex,
+          property: 'content',
+          value: this.storeBlankUnreadable
+        });
+        this.storeBlankUnreadable = '';
+      }
+      if (this.propertyMap.maintainHistory) {
+        this.addHistory();
+      }
+      EventBus.$off(constants.$$ENTRY_ENTER, this.onEnter);
+      EventBus.$off(constants.$$ENTRY_LEAVE, this.onLeave);
+    },
+
+    onEnter() {
+      if (this.fieldobj.content === constants.BLANK || this.fieldobj.content === constants.UNREADABLE) {
+        this.storeBlankUnreadable = this.fieldobj.content;
+        this.$store.dispatch('fieldSetProperty', {
+          image: this.$store.state.focus.currentImage,
+          record: this.$store.state.focus.currentRecord,
+          field: this.fieldIndex,
+          property: 'content',
+          value: ''
+        });
+      }
+      if (this.$refs.input.textContent.length) {
+        selectTextContentEditable(this.$refs.input);
+      }
+    },
+
+    onLeave() {
+      if (this.showDropdown) {
+        this.closeDropdown();
+      }
+      if (this.storeBlankUnreadable) {
+        this.$store.dispatch('fieldSetProperty', {
+          image: this.$store.state.focus.currentImage,
+          record: this.$store.state.focus.currentRecord,
+          field: this.fieldIndex,
+          property: 'content',
+          value: this.storeBlankUnreadable
+        });
+        this.storeBlankUnreadable = null;
       }
       if (this.propertyMap.maintainHistory) {
         this.addHistory();
@@ -146,7 +201,13 @@ export const EntryFieldComponent = Vue.component('entryField', {
      */
     onKeyPress(e) {
       // set previous field content
-      this.fieldobj.previousContent = e.target.textContent;
+      this.$store.dispatch('fieldSetProperty', {
+        image: this.$store.state.focus.currentImage,
+        record: this.$store.state.focus.currentRecord,
+        field: this.fieldIndex,
+        property: 'previousValue',
+        value: e.target.textContent
+      });
 
       if (KeyService.isEnter(e)) {
         e.preventDefault();
@@ -168,7 +229,13 @@ export const EntryFieldComponent = Vue.component('entryField', {
 
       if (KeyService.isCommandB(e)) {
         e.preventDefault();
-        this.fieldobj.content = constants.BLANK;
+        this.$store.dispatch('fieldSetProperty', {
+          image: this.$store.state.focus.currentImage,
+          record: this.$store.state.focus.currentRecord,
+          field: this.fieldIndex,
+          property: 'content',
+          value: constants.BLANK
+        });
         this.validateContent(this.fieldobj.content);
         this.storeBlankUnreadable = null;
         FocusService.next();
@@ -176,7 +243,14 @@ export const EntryFieldComponent = Vue.component('entryField', {
 
       if (KeyService.isCommandU(e)) {
         e.preventDefault();
-        this.fieldobj.content = constants.UNREADABLE;
+        this.$store.dispatch('fieldSetProperty', {
+          image: this.$store.state.focus.currentImage,
+          record: this.$store.state.focus.currentRecord,
+          field: this.fieldIndex,
+          property: 'content',
+          value: constants.UNREADABLE
+        });
+
         this.validateContent(this.fieldobj.content);
         this.storeBlankUnreadable = null;
         FocusService.next();
@@ -219,7 +293,13 @@ export const EntryFieldComponent = Vue.component('entryField', {
       if (!this.dropdown.active && this.showDropdown) {
         this.openDropdown();
       }
-      this.fieldobj.content = this.$refs.input.textContent;
+      this.$store.dispatch('fieldSetProperty', {
+        image: this.$store.state.focus.currentImage,
+        record: this.$store.state.focus.currentRecord,
+        field: this.fieldIndex,
+        property: 'content',
+        value: this.$refs.input.textContent
+      });
 
       if (this.fieldobj.content !== '' && this.storeBlankUnreadable) {
         this.storeBlankUnreadable = '';
@@ -228,8 +308,8 @@ export const EntryFieldComponent = Vue.component('entryField', {
 
     validateContent(newContent) {
       let {errorMsg, valid} = ValidationService.validateField(newContent || this.storeBlankUnreadable, this.fieldobj, this.properties);
-      this.fieldobj.errorMsg = errorMsg;
-      this.fieldobj.valid = valid;
+      // this.fieldobj.errorMsg = errorMsg;
+      // this.fieldobj.valid = valid;
     },
 
     addHistory() {
@@ -256,10 +336,15 @@ export const EntryFieldComponent = Vue.component('entryField', {
     },
 
     removeHistory() {
-      _remove(this.propertyMap[`${SELECTED_LANG}.listValues`], {
-        content: this.dropdown.list[this.dropdown.activeIndex].label
-      });
-      this.updateDropdownList();
+      if (this.dropdown.list.length && this.dropdown.activeIndex > -1) {
+        _remove(this.propertyMap[`${SELECTED_LANG}.listValues`], {
+          content: this.dropdown.list[this.dropdown.activeIndex].label
+        });
+        if (this.dropdown.activeIndex === this.dropdown.list.length-1) {
+          this.dropdown.activeIndex--;
+        }
+        this.updateDropdownList();
+      }
     },
 
     toggleDropdown() {
@@ -311,7 +396,6 @@ export const EntryFieldComponent = Vue.component('entryField', {
           }
           test = new RegExp(`^${normalizeInputData(!_isBoolean(testAgainst) ? testAgainst : input)}`, 'g');
 
-          console.log(item.label.match(test));
         } else {
           test = new RegExp(`^${normalizeInputData(input)}`, 'g');
         }
@@ -320,8 +404,13 @@ export const EntryFieldComponent = Vue.component('entryField', {
     },
     selectDropdownItem() {
       let lastSpace = this.fieldobj.content.lastIndexOf(' ');
-      console.log(this.fieldobj.content.slice(0, lastSpace+1) + this.dropdown.list[this.dropdown.activeIndex].label);
-      this.fieldobj.content = this.$refs.input.textContent = this.fieldobj.content.slice(0, lastSpace+1) + this.dropdown.list[this.dropdown.activeIndex].label;
+      this.$store.dispatch('fieldSetProperty', {
+        image: this.$store.state.focus.currentImage,
+        record: this.$store.state.focus.currentRecord,
+        field: this.fieldIndex,
+        property: 'content',
+        value: this.$refs.input.textContent = this.fieldobj.content.slice(0, lastSpace+1) + this.dropdown.list[this.dropdown.activeIndex].label
+      });
       this.storeBlankUnreadable = '';
       cursorEndContentEditable(this.$refs.input);
     },

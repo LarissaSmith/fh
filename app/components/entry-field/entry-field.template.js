@@ -6,7 +6,11 @@ export const EntryFieldTemplate =
     <label>{{displayName}} {{properties.entryRequired ? '*' : ''}}</label>
     <div class="entry-field__input-wrapper">
         <div class="entry-field__typeahead">
-            <span>{{fieldobj.content == '' ? storeBlankUnreadable == BLANK || storeBlankUnreadable == UNREADABLE ? blankUnreadable(storeBlankUnreadable) : 'Enter Text Here' : dropdown.typeahead[0]}}</span>
+            <span>{{fieldobj.content == ''
+                      ? storeBlankUnreadable == BLANK || storeBlankUnreadable == UNREADABLE
+                        ? blankUnreadable(storeBlankUnreadable)
+                        : 'Enter Text Here'
+                      : dropdown.typeahead[0]}}</span>
             {{dropdown.typeahead[1]}}
         </div>
         <div class="entry-field__input" contenteditable="true" ref="input"></div>

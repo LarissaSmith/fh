@@ -1,7 +1,9 @@
 import { mockBatchData } from '../mock-batch-data';
+import _findIndex from 'lodash/findIndex';
+import { constructEmptyRecord } from '../core/utils/record';
 
 export const store = {
-  // strict: true,
+  strict: true,
   state: {
     batch: mockBatchData,
     errorList: [],
@@ -23,22 +25,38 @@ export const store = {
         }
       });
     },
-    fieldSetFocus(state, term) {
-      state.focus.currentField = term;
+    fieldSetFocus(state, index) {
+      state.focus.currentField = index;
+    },
+    fieldSetPropertyComputed(state, {image, record, field, property, value}) {
+      state.batch.images[image].records[record].fields[field][property] = value;
     },
     recordSet(state, index) {
       state.focus.currentRecord = index;
     },
-
+    recordAddComputed(state, image) {
+      state.batch.images[image].records.push(constructEmptyRecord('Death'))
+    },
     imageSet(state, index) {
       state.focus.currentImage = index;
-    },
-
-    recordSet(state, index) {
-      state.focus.currentRecord = index;
     }
   },
-  actions: {},
+  actions: {
+    fieldSetProperty({commit, state, getters}, {image, record, field, property, value}) {
+      let computedImage = _findIndex(state.batch.images, {id: getters.images[image].id});
+      commit('fieldSetPropertyComputed', {
+        image: computedImage,
+        record,
+        field,
+        property,
+        value
+      });
+    },
+    recordAdd({commit, state, getters}) {
+      let computedImage = _findIndex(state.batch.images, {id: getters.images[state.focus.currentImage].id});
+      commit('recordAddComputed', computedImage)
+    }
+  },
   getters: {
     images(state) {
       return state.batch.images.filter(image => image.indexable);

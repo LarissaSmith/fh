@@ -14,24 +14,35 @@ class _FocusService {
    * moves the focus to the next available thing
    */
   next() {
+    let focus = this.store.state.focus;
+    let currentRecord = this.store.getters.currentRecord;
+    let images = this.store.getters.images;
+
     // go to next entry
-    if (this.store.state.focus.currentField < (this.store.getters.currentRecord.fields.length-1)) {
-      this.store.commit('fieldSetFocus', this.store.state.focus.currentField+1);
+    if (focus.currentField < (currentRecord.fields.length-1)) {
+      this.store.commit('fieldSetFocus', focus.currentField+1);
     }
     // go to 'add entry'
-    else if (this.store.state.focus.currentField === (this.store.getters.currentRecord.fields.length-1)) {
+    else if (focus.currentField === (currentRecord.fields.length-1)) {
       document.querySelector(`#${constants.FOCUS_ADD_RECORD} > .btn`).focus();
       this.store.commit('fieldSetFocus', constants.FOCUS_ADD_RECORD);
     }
+    // go to next record
+    else if (focus.currentField === constants.FOCUS_ADD_RECORD &&
+             focus.currentRecord < images[focus.currentImage].records.length-1) {
+      this.store.commit('recordSet', focus.currentRecord+1);
+      this.store.commit('fieldSetFocus', 0);
+    }
     // go to 'next image'
-    else if (this.store.state.focus.currentField === constants.FOCUS_ADD_RECORD &&
-             this.store.state.focus.currentImage < this.store.getters.images.length-1) {
+    else if (focus.currentField === constants.FOCUS_ADD_RECORD &&
+             focus.currentRecord === images[focus.currentImage].records.length-1 &&
+             focus.currentImage < images.length-1) {
       document.querySelector(`#${constants.FOCUS_NEXT_IMAGE} > .btn`).focus();
       this.store.commit('fieldSetFocus', constants.FOCUS_NEXT_IMAGE);
     }
     // go to 'submit batch'
-    else if (this.store.state.focus.currentField === constants.FOCUS_ADD_RECORD &&
-             this.store.state.focus.currentImage === this.store.getters.images.length-1) {
+    else if (focus.currentField === constants.FOCUS_ADD_RECORD &&
+             focus.currentImage === images.length-1) {
       document.querySelector(`#${constants.FOCUS_SUBMIT_BATCH} > .btn`).focus();
       this.store.commit('fieldSetFocus', constants.FOCUS_SUBMIT_BATCH);
     }
@@ -42,20 +53,31 @@ class _FocusService {
    * moves the focus to the previous available thing
    */
   previous() {
-    // go to previous entry
-    if (this.store.state.focus.currentField > 0) {
-      this.store.commit('fieldSetFocus', this.store.state.focus.currentField-1);
+    let focus = this.store.state.focus;
+    let currentRecord = this.store.getters.currentRecord;
+    let images = this.store.getters.images;
+
+    // go to previous field
+    if (focus.currentField > 0) {
+      this.store.commit('fieldSetFocus', focus.currentField-1);
     }
-    // go to last entry
-    else if (this.store.state.focus.currentField === constants.FOCUS_ADD_RECORD) {
-      this.store.commit('fieldSetFocus', this.store.getters.currentRecord.fields.length-1);
+    // go to last field
+    else if (focus.currentField === constants.FOCUS_ADD_RECORD) {
+      this.store.commit('fieldSetFocus', currentRecord.fields.length-1);
     }
-    // go to 'add entry'
-    else if (this.store.state.focus.currentField === constants.FOCUS_NEXT_IMAGE ||
-             this.store.state.focus.currentField === constants.FOCUS_SUBMIT_BATCH) {
+    // go to 'add record'
+    else if (focus.currentField === constants.FOCUS_NEXT_IMAGE ||
+             focus.currentField === constants.FOCUS_SUBMIT_BATCH) {
       document.querySelector(`#${constants.FOCUS_ADD_RECORD} > .btn`).focus();
       this.store.commit('fieldSetFocus', constants.FOCUS_ADD_RECORD);
     }
+    // go to previous record
+    else if (focus.currentField === 0 &&
+             focus.currentRecord > 0) {
+      this.store.commit('recordSet', focus.currentRecord-1);
+      document.querySelector(`#${constants.FOCUS_ADD_RECORD} > .btn`).focus();
+      this.store.commit('fieldSetFocus', constants.FOCUS_ADD_RECORD);
+      }
   }
 
   goToImage(imageIndex) {

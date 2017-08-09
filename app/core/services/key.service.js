@@ -1,5 +1,6 @@
 import { FocusService } from './focus.service';
-import { BLANK, UNREADABLE } from '../constants';
+import * as constants from '../constants';
+import { EventBus } from '../event-bus';
 
 const TAB = 9,
     ENTER = 13;
@@ -15,6 +16,10 @@ class _KeyService {
   }
 
   keyDown(e) {
+    // prevent italics
+    if (this.isCommandI(e)) {
+      e.preventDefault();
+    }
 
     if (this.isTabShift(e)) {
       e.preventDefault();
@@ -38,12 +43,12 @@ class _KeyService {
 
     if (this.isBShift(e)) {
       e.preventDefault();
-      this.store.commit('fieldSetAll', BLANK);
+      this.store.commit('fieldSetAll', constants.BLANK);
     }
 
     if (this.isUShift(e)) {
       e.preventDefault();
-      this.store.commit('fieldSetAll', UNREADABLE);
+      this.store.commit('fieldSetAll', constants.UNREADABLE);
     }
 
     if (this.isArrowDown(e) || this.isArrowUp(e)) {
@@ -54,16 +59,19 @@ class _KeyService {
       e.preventDefault();
       let recordLength = this.store.getters.images[this.store.state.focus.currentImage].records.length;
       if (this.store.state.focus.currentRecord < recordLength-1) {
-        this.store.commit('recordSet', this.store.state.focus.currentRecord+1);
+        EventBus.$emit(constants.$$ENTRY_LEAVE);
+        setTimeout(() => this.store.commit('recordSet', this.store.state.focus.currentRecord+1), 0);
+        setTimeout(() => EventBus.$emit(constants.$$ENTRY_ENTER), 0);
       }
     }
 
     if (this.isCommandArrowLeft(e)) {
       e.preventDefault();
       if (this.store.state.focus.currentRecord > 0) {
-        this.store.commit('recordSet', this.store.state.focus.currentRecord-1);
+        EventBus.$emit(constants.$$ENTRY_LEAVE);
+        setTimeout(() => this.store.commit('recordSet', this.store.state.focus.currentRecord-1), 0);
+        setTimeout(() => EventBus.$emit(constants.$$ENTRY_ENTER), 0);
       }
-
     }
   }
 
@@ -83,6 +91,10 @@ class _KeyService {
     return e.key === 'Escape';
   }
 
+  isCommandI(e) {
+    return e.key === 'i' && !e.shiftKey && (e.ctrlKey || e.metaKey);
+  }
+
   isCommandB(e) {
     return e.key === 'b' && !e.shiftKey && (e.ctrlKey || e.metaKey);
   }
@@ -100,7 +112,7 @@ class _KeyService {
   }
 
   isBackspace(e) {
-    return e.key === 'Backspace';
+    return e.key === 'Backspace' && !e.shiftKey &&  !(e.ctrlKey || e.metaKey);
   }
 
   isCommandArrowUp(e) {

@@ -12,3 +12,8 @@ export const FIELD_TYPE_SELECT = 'FIELD_TYPE_SELECT';
 export const FOCUS_ADD_RECORD = 'FOCUS_ADD_RECORD';
 export const FOCUS_NEXT_IMAGE = 'FOCUS_NEXT_IMAGE';
 export const FOCUS_SUBMIT_BATCH = 'FOCUS_SUBMIT_BATCH';
+
+
+// events
+export const $$ENTRY_LEAVE = '$$ENTRY_LEAVE';
+export const $$ENTRY_ENTER = '$$ENTRY_ENTER';
