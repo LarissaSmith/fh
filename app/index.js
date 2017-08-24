@@ -10,6 +10,7 @@ import './styles/main.scss';
 import { KeyService } from 'services/key.service';
 import { FocusService } from 'services/focus.service';
 
+
 import * as FS from './mock-fs';
 
 window.FS = FS;
@@ -23,7 +24,8 @@ Vue.use(VueRouter);
 
 const appStore = new Vuex.Store(store);
 
-// these services need access to the store
+// these services need access to the instantiated store
+// they are init'd before the components are attached to the Vue instance
 KeyService.init(appStore);
 FocusService.init(appStore);
 

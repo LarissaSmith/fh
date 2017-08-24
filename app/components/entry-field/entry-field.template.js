@@ -2,13 +2,13 @@
 export const EntryFieldTemplate =
 `<div class="entry-field"
       @click="focus()"
-      :class="{'focus': $store.state.focus.currentField==fieldIndex}">
+      :class="{'focus': currentFieldIndex==fieldIndex}">
     <label>{{displayName}} {{properties.entryRequired ? '*' : ''}}</label>
     <div class="entry-field__input-wrapper">
         <div class="entry-field__typeahead">
             <span>{{fieldobj.content == ''
-                      ? storeBlankUnreadable == BLANK || storeBlankUnreadable == UNREADABLE
-                        ? blankUnreadable(storeBlankUnreadable)
+                      ? fieldobj.blank || fieldobj.unreadable
+                        ? blankUnreadable(fieldobj.blank, fieldobj.unreadable)
                         : 'Enter Text Here'
                       : dropdown.typeahead[0]}}</span>
             {{dropdown.typeahead[1]}}

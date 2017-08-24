@@ -1,8 +1,10 @@
 import VueRouter from 'vue-router';
-import { IndexingComponent } from './indexing/indexing.component';
+import { BatchComponent } from './batch/batch.component';
+import { MyIndexingComponent } from "./my-indexing/my-indexing.component";
 
 const routes = [
-  { path: '/', component: IndexingComponent },
+  { path: '/batch', component: BatchComponent },
+  { path: '/my-indexing', component: MyIndexingComponent }
 ];
 
 export const router = new VueRouter({

@@ -1,11 +1,11 @@
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
 import { EntryFieldTemplate } from './entry-field.template';
 import { TemplateService } from '../../core/services/template.service';
 import { KeyService } from '../../core/services/key.service';
 import { FocusService } from '../../core/services/focus.service';
 import { ValidationService } from '../../core/services/validation.service';
 import * as constants from '../../core/constants';
-import { EventBus } from '../../core/event-bus';
 
 import {
   blankUnreadableMixin,
@@ -25,10 +25,6 @@ export const EntryFieldComponent = Vue.component('entryField', {
   template: EntryFieldTemplate,
 
   mounted() {
-    this.updateInput = this.updateInput.bind(this);
-    this.onFocus = this.onFocus.bind(this);
-    this.onBlur = this.onBlur.bind(this);
-    this.onKeyPress = this.onKeyPress.bind(this);
     this.$refs.input.addEventListener('input', this.updateInput);
     this.$refs.input.addEventListener('focus', this.onFocus);
     this.$refs.input.addEventListener('blur', this.onBlur);
@@ -51,7 +47,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
         this.updateDropdownList();
       }
     },
-    '$store.state.focus.currentField': function(newFieldIndex) {
+    'currentFieldIndex': function(newFieldIndex) {
       if (newFieldIndex === this.fieldIndex) {
         this.focus();
       }
@@ -59,6 +55,14 @@ export const EntryFieldComponent = Vue.component('entryField', {
   },
 
   computed: {
+    ...mapGetters([
+      'currentImage',
+      'currentRecord',
+      'currentField',
+      'currentImageIndex',
+      'currentRecordIndex',
+      'currentFieldIndex'
+    ]),
     propertyMap() {
       let map = {};
       this.properties.properties.property.forEach(item => {
@@ -86,7 +90,6 @@ export const EntryFieldComponent = Vue.component('entryField', {
     return {
       inputHasFocus: false,
       displayName: TemplateService.getFieldName(this.fieldIndex),
-      storeBlankUnreadable: null,
       lastKey: null,
       dropdown: {
         active: false,
@@ -108,27 +111,13 @@ export const EntryFieldComponent = Vue.component('entryField', {
       this.$refs.input.focus();
     },
     onFocus() {
-      // handle changes without focusing/blurring
-      EventBus.$on(constants.$$ENTRY_ENTER, this.onEnter);
-      EventBus.$on(constants.$$ENTRY_LEAVE, this.onLeave);
-
       if (this.$refs.input.textContent.length && !this.inputHasFocus) {
         selectTextContentEditable(this.$refs.input);
       }
-      if (this.$store.state.focus.currentField !== this.fieldIndex) {
-        this.$store.commit('fieldSetFocus', this.fieldIndex);
+      if (this.currentFieldIndex !== this.fieldIndex) {
+        this.$store.dispatch('goToField', this.fieldIndex);
       }
       this.inputHasFocus = true;
-      if (this.fieldobj.content === constants.BLANK || this.fieldobj.content === constants.UNREADABLE) {
-        this.storeBlankUnreadable = this.fieldobj.content;
-        this.$store.dispatch('fieldSetProperty', {
-          image: this.$store.state.focus.currentImage,
-          record: this.$store.state.focus.currentRecord,
-          field: this.fieldIndex,
-          property: 'content',
-          value: ''
-        });
-      }
     },
 
     /**
@@ -142,53 +131,6 @@ export const EntryFieldComponent = Vue.component('entryField', {
       if (this.showDropdown) {
         this.closeDropdown();
       }
-      if (this.storeBlankUnreadable) {
-        this.$store.dispatch('fieldSetProperty', {
-          image: this.$store.state.focus.currentImage,
-          record: this.$store.state.focus.currentRecord,
-          field: this.fieldIndex,
-          property: 'content',
-          value: this.storeBlankUnreadable
-        });
-        this.storeBlankUnreadable = '';
-      }
-      if (this.propertyMap.maintainHistory) {
-        this.addHistory();
-      }
-      EventBus.$off(constants.$$ENTRY_ENTER, this.onEnter);
-      EventBus.$off(constants.$$ENTRY_LEAVE, this.onLeave);
-    },
-
-    onEnter() {
-      if (this.fieldobj.content === constants.BLANK || this.fieldobj.content === constants.UNREADABLE) {
-        this.storeBlankUnreadable = this.fieldobj.content;
-        this.$store.dispatch('fieldSetProperty', {
-          image: this.$store.state.focus.currentImage,
-          record: this.$store.state.focus.currentRecord,
-          field: this.fieldIndex,
-          property: 'content',
-          value: ''
-        });
-      }
-      if (this.$refs.input.textContent.length) {
-        selectTextContentEditable(this.$refs.input);
-      }
-    },
-
-    onLeave() {
-      if (this.showDropdown) {
-        this.closeDropdown();
-      }
-      if (this.storeBlankUnreadable) {
-        this.$store.dispatch('fieldSetProperty', {
-          image: this.$store.state.focus.currentImage,
-          record: this.$store.state.focus.currentRecord,
-          field: this.fieldIndex,
-          property: 'content',
-          value: this.storeBlankUnreadable
-        });
-        this.storeBlankUnreadable = null;
-      }
       if (this.propertyMap.maintainHistory) {
         this.addHistory();
       }
@@ -201,10 +143,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
      */
     onKeyPress(e) {
       // set previous field content
-      this.$store.dispatch('fieldSetProperty', {
-        image: this.$store.state.focus.currentImage,
-        record: this.$store.state.focus.currentRecord,
-        field: this.fieldIndex,
+      this.$store.dispatch('setCurrentFieldProperty', {
         property: 'previousValue',
         value: e.target.textContent
       });
@@ -229,36 +168,14 @@ export const EntryFieldComponent = Vue.component('entryField', {
 
       if (KeyService.isCommandB(e)) {
         e.preventDefault();
-        this.$store.dispatch('fieldSetProperty', {
-          image: this.$store.state.focus.currentImage,
-          record: this.$store.state.focus.currentRecord,
-          field: this.fieldIndex,
-          property: 'content',
-          value: constants.BLANK
-        });
-        this.validateContent(this.fieldobj.content);
-        this.storeBlankUnreadable = null;
+        this.$store.dispatch('setCurrentFieldProperty', {property: 'blank', value: true});
         FocusService.next();
       }
 
       if (KeyService.isCommandU(e)) {
         e.preventDefault();
-        this.$store.dispatch('fieldSetProperty', {
-          image: this.$store.state.focus.currentImage,
-          record: this.$store.state.focus.currentRecord,
-          field: this.fieldIndex,
-          property: 'content',
-          value: constants.UNREADABLE
-        });
-
-        this.validateContent(this.fieldobj.content);
-        this.storeBlankUnreadable = null;
+        this.$store.dispatch('setCurrentFieldProperty', {property: 'unreadable', value: true});
         FocusService.next();
-      }
-
-      if (KeyService.isBackspace(e) && !this.fieldobj.content && !this.fieldobj.previousContent) {
-        this.validateContent(this.fieldobj.content);
-        this.storeBlankUnreadable = '';
       }
 
       if (KeyService.isCommandShiftBackspace(e)) {
@@ -293,21 +210,14 @@ export const EntryFieldComponent = Vue.component('entryField', {
       if (!this.dropdown.active && this.showDropdown) {
         this.openDropdown();
       }
-      this.$store.dispatch('fieldSetProperty', {
-        image: this.$store.state.focus.currentImage,
-        record: this.$store.state.focus.currentRecord,
-        field: this.fieldIndex,
+      this.$store.dispatch('setCurrentFieldProperty', {
         property: 'content',
         value: this.$refs.input.textContent
       });
-
-      if (this.fieldobj.content !== '' && this.storeBlankUnreadable) {
-        this.storeBlankUnreadable = '';
-      }
     },
 
     validateContent(newContent) {
-      let {errorMsg, valid} = ValidationService.validateField(newContent || this.storeBlankUnreadable, this.fieldobj, this.properties);
+      let {errorMsg, valid} = ValidationService.validateField(newContent, this.fieldobj, this.properties);
       // this.fieldobj.errorMsg = errorMsg;
       // this.fieldobj.valid = valid;
     },
@@ -385,33 +295,26 @@ export const EntryFieldComponent = Vue.component('entryField', {
           type: 'history'
         }
       }).concat(options).filter(item => {
-        let isBlankUnreadable = item.label !== constants.BLANK && item.label !== constants.UNREADABLE;
         let test;
 
-        if (true) {
-          let lastWordIndex = input.lastIndexOf(' ');
-          let testAgainst = false;
-          if (lastWordIndex > -1) {
-            testAgainst = input.substring(lastWordIndex).trim();
-          }
-          test = new RegExp(`^${normalizeInputData(!_isBoolean(testAgainst) ? testAgainst : input)}`, 'g');
-
-        } else {
-          test = new RegExp(`^${normalizeInputData(input)}`, 'g');
+        let lastWordIndex = input.lastIndexOf(' ');
+        let testAgainst = false;
+        if (lastWordIndex > -1) {
+          testAgainst = input.substring(lastWordIndex).trim();
         }
-        return !!item.label.match(test) && isBlankUnreadable;
+        test = new RegExp(`^${normalizeInputData(!_isBoolean(testAgainst) ? testAgainst : input)}`, 'g');
+
+
+        return !!item.label.match(test);
       });
     },
     selectDropdownItem() {
       let lastSpace = this.fieldobj.content.lastIndexOf(' ');
-      this.$store.dispatch('fieldSetProperty', {
-        image: this.$store.state.focus.currentImage,
-        record: this.$store.state.focus.currentRecord,
-        field: this.fieldIndex,
+      this.$store.dispatch('setCurrentFieldProperty', {
         property: 'content',
         value: this.$refs.input.textContent = this.fieldobj.content.slice(0, lastSpace+1) + this.dropdown.list[this.dropdown.activeIndex].label
       });
-      this.storeBlankUnreadable = '';
+      // todo: need to figure out a better way to do this
       cursorEndContentEditable(this.$refs.input);
     },
     setActiveDropdownItem(listIndex) {

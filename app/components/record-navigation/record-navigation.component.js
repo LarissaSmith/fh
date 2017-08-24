@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { mapGetters } from 'vuex';
 import { KeyService } from '../../core/services/key.service';
 
 export const RecordNavigationComponent = Vue.component('recordNavigation', {
@@ -8,7 +9,7 @@ export const RecordNavigationComponent = Vue.component('recordNavigation', {
     <button class="btn" @click="previousRecord()">
         <icon name="chevron-left"></icon>
     </button
-    ><input type="text" v-model="inputFocus ? currentRecord : recordStatement" ref="input"
+    ><input type="text" v-model="inputFocus ? displayRecordIndex : recordStatement" ref="input"
     ><button class="btn btn--disabled" @click="nextRecord()">
         <icon name="chevron-right"></icon>
     </button>
@@ -27,11 +28,19 @@ export const RecordNavigationComponent = Vue.component('recordNavigation', {
   },
 
   computed: {
+    ...mapGetters([
+      'currentImage',
+      'currentRecord',
+      'currentField',
+      'currentImageIndex',
+      'currentRecordIndex',
+      'currentFieldIndex'
+    ]),
     recordStatement() {
-      return `Entry ${this.currentRecord} of ${this.totalRecords}`;
+      return `Entry ${this.displayRecordIndex} of ${this.currentImage.records.length}`;
     },
-    currentRecord() {
-      return this.$store.state.focus.currentRecord+1
+    displayRecordIndex() {
+      return this.currentRecordIndex+1
     }
   },
 
@@ -43,16 +52,16 @@ export const RecordNavigationComponent = Vue.component('recordNavigation', {
 
   methods: {
     setRecord(index) {
-      this.$store.commit('recordSet', index-1);
+      this.$store.dispatch('goToRecord', index);
     },
     nextRecord() {
-      if (this.currentRecord < this.totalRecords) {
-        this.$store.commit('recordSet', this.currentRecord);
+      if (this.currentRecordIndex < this.currentImage.records.length-1) {
+        this.$store.dispatch('goToRecord', this.currentRecordIndex+1);
       }
     },
     previousRecord() {
-      if (this.currentRecord > 1) {
-        this.$store.commit('recordSet', this.currentRecord-2);
+      if (this.currentRecordIndex > 0) {
+        this.$store.dispatch('goToRecord', this.currentRecordIndex-1);
       }
     },
     onKeyDown(e) {
@@ -67,10 +76,11 @@ export const RecordNavigationComponent = Vue.component('recordNavigation', {
       }, 0);
     },
     onBlur() {
-      if (!isNaN(this.$refs.input.value) &&
-          parseInt(this.$refs.input.value) > 0 &&
-          parseInt(this.$refs.input.value) < this.totalRecords+1) {
-        this.setRecord(this.$refs.input.value);
+      let val = parseInt(this.$refs.input.value);
+      if (!isNaN(val) &&
+          val > 0 &&
+          val < this.currentImage.records.length+1) {
+        this.setRecord(val-1);
       }
       this.inputFocus = false;
     }

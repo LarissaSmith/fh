@@ -2,9 +2,6 @@ import { FocusService } from './focus.service';
 import * as constants from '../constants';
 import { EventBus } from '../event-bus';
 
-const TAB = 9,
-    ENTER = 13;
-
 class _KeyService {
   constructor() {
     this.keyDown = this.keyDown.bind(this);
@@ -43,12 +40,18 @@ class _KeyService {
 
     if (this.isBShift(e)) {
       e.preventDefault();
-      this.store.commit('fieldSetAll', constants.BLANK);
+      this.store.commit('setAllFieldProperty', {
+        property: 'blank',
+        value: true
+      });
     }
 
     if (this.isUShift(e)) {
       e.preventDefault();
-      this.store.commit('fieldSetAll', constants.UNREADABLE);
+      this.store.commit('setAllFieldProperty', {
+        property: 'unreadable',
+
+      });
     }
 
     if (this.isArrowDown(e) || this.isArrowUp(e)) {
@@ -57,10 +60,10 @@ class _KeyService {
 
     if (this.isCommandArrowRight(e)) {
       e.preventDefault();
-      let recordLength = this.store.getters.images[this.store.state.focus.currentImage].records.length;
+      let recordLength = this.store.state.batch.images[this.store.state.focus.currentImage].records.length;
       if (this.store.state.focus.currentRecord < recordLength-1) {
         EventBus.$emit(constants.$$ENTRY_LEAVE);
-        setTimeout(() => this.store.commit('recordSet', this.store.state.focus.currentRecord+1), 0);
+        setTimeout(() => this.store.commit('setCurrentRecord', this.store.state.focus.currentRecord+1), 0);
         setTimeout(() => EventBus.$emit(constants.$$ENTRY_ENTER), 0);
       }
     }
@@ -69,7 +72,33 @@ class _KeyService {
       e.preventDefault();
       if (this.store.state.focus.currentRecord > 0) {
         EventBus.$emit(constants.$$ENTRY_LEAVE);
-        setTimeout(() => this.store.commit('recordSet', this.store.state.focus.currentRecord-1), 0);
+        setTimeout(() => this.store.commit('setCurrentRecord', this.store.state.focus.currentRecord-1), 0);
+        setTimeout(() => EventBus.$emit(constants.$$ENTRY_ENTER), 0);
+      }
+    }
+
+    if (this.isCommandShiftArrowRight(e)) {
+      e.preventDefault();
+      if (this.store.state.focus.currentImage < this.store.state.batch  .images.length-1) {
+        EventBus.$emit(constants.$$ENTRY_LEAVE);
+        setTimeout(() => {
+          this.store.commit('setCurrentRecord', 0);
+          this.store.commit('setCurrentField', 0);
+          this.store.commit('setCurrentImage', this.store.state.focus.currentImage+1);
+        }, 0);
+        setTimeout(() => EventBus.$emit(constants.$$ENTRY_ENTER), 0);
+      }
+    }
+
+    if (this.isCommandShiftArrowLeft(e)) {
+      e.preventDefault();
+      if (this.store.state.focus.currentImage > 0) {
+        EventBus.$emit(constants.$$ENTRY_LEAVE);
+        setTimeout(() => {
+          this.store.commit('setCurrentRecord', 0);
+          this.store.commit('setCurrentField', 0);
+          this.store.commit('setCurrentImage', this.store.state.focus.currentImage-1);
+        }, 0);
         setTimeout(() => EventBus.$emit(constants.$$ENTRY_ENTER), 0);
       }
     }
@@ -129,6 +158,14 @@ class _KeyService {
 
   isCommandArrowRight(e) {
     return e.key === 'ArrowRight' && !e.shiftKey && (e.ctrlKey || e.metaKey);
+  }
+
+  isCommandShiftArrowLeft(e) {
+    return e.key === 'ArrowLeft' && e.shiftKey && (e.ctrlKey || e.metaKey);
+  }
+
+  isCommandShiftArrowRight(e) {
+    return e.key === 'ArrowRight' && e.shiftKey && (e.ctrlKey || e.metaKey);
   }
 
   isArrowDown(e) {

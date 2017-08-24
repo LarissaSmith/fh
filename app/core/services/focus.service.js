@@ -14,37 +14,36 @@ class _FocusService {
    * moves the focus to the next available thing
    */
   next() {
-    let focus = this.store.state.focus;
-    let currentRecord = this.store.getters.currentRecord;
-    let images = this.store.getters.images;
+    let getters = this.store.getters;
+    let images = this.store.state.batch.images;
 
     // go to next entry
-    if (focus.currentField < (currentRecord.fields.length-1)) {
-      this.store.commit('fieldSetFocus', focus.currentField+1);
+    if (getters.currentFieldIndex < (getters.currentRecord.fields.length-1)) {
+      this.store.dispatch('goToField', getters.currentFieldIndex+1);
     }
     // go to 'add entry'
-    else if (focus.currentField === (currentRecord.fields.length-1)) {
+    else if (getters.currentFieldIndex === (getters.currentRecord.fields.length-1)) {
       document.querySelector(`#${constants.FOCUS_ADD_RECORD} > .btn`).focus();
-      this.store.commit('fieldSetFocus', constants.FOCUS_ADD_RECORD);
+      this.store.dispatch('goToField', constants.FOCUS_ADD_RECORD);
     }
     // go to next record
-    else if (focus.currentField === constants.FOCUS_ADD_RECORD &&
-             focus.currentRecord < images[focus.currentImage].records.length-1) {
-      this.store.commit('recordSet', focus.currentRecord+1);
-      this.store.commit('fieldSetFocus', 0);
+    else if (getters.currentFieldIndex === constants.FOCUS_ADD_RECORD &&
+             getters.currentRecordIndex < getters.currentImage.records.length-1) {
+      this.store.dispatch('goToRecord', getters.currentRecordIndex+1);
+      this.store.dispatch('goToField', getters.currentFieldIndex);
     }
     // go to 'next image'
-    else if (focus.currentField === constants.FOCUS_ADD_RECORD &&
-             focus.currentRecord === images[focus.currentImage].records.length-1 &&
-             focus.currentImage < images.length-1) {
+    else if (getters.currentFieldIndex === constants.FOCUS_ADD_RECORD &&
+             getters.currentRecordIndex === getters.currentImage.records.length-1 &&
+             getters.currentImageIndex < images.length-1) {
       document.querySelector(`#${constants.FOCUS_NEXT_IMAGE} > .btn`).focus();
-      this.store.commit('fieldSetFocus', constants.FOCUS_NEXT_IMAGE);
+      this.store.dispatch('goToField', constants.FOCUS_NEXT_IMAGE);
     }
     // go to 'submit batch'
-    else if (focus.currentField === constants.FOCUS_ADD_RECORD &&
-             focus.currentImage === images.length-1) {
+    else if (getters.currentFieldIndex === constants.FOCUS_ADD_RECORD &&
+             getters.currentImageIndex === images.length-1) {
       document.querySelector(`#${constants.FOCUS_SUBMIT_BATCH} > .btn`).focus();
-      this.store.commit('fieldSetFocus', constants.FOCUS_SUBMIT_BATCH);
+      this.store.dispatch('goToField', constants.FOCUS_SUBMIT_BATCH);
     }
   }
 
@@ -53,40 +52,37 @@ class _FocusService {
    * moves the focus to the previous available thing
    */
   previous() {
-    let focus = this.store.state.focus;
-    let currentRecord = this.store.getters.currentRecord;
-    let images = this.store.getters.images;
+    let getters = this.store.getters;
 
     // go to previous field
-    if (focus.currentField > 0) {
-      this.store.commit('fieldSetFocus', focus.currentField-1);
+    if (getters.currentFieldIndex > 0) {
+      this.store.dispatch('goToField', getters.currentFieldIndex-1);
     }
     // go to last field
-    else if (focus.currentField === constants.FOCUS_ADD_RECORD) {
-      this.store.commit('fieldSetFocus', currentRecord.fields.length-1);
+    else if (getters.currentFieldIndex === constants.FOCUS_ADD_RECORD) {
+      this.store.dispatch('goToField', getters.currentRecord.fields.length-1);
     }
     // go to 'add record'
-    else if (focus.currentField === constants.FOCUS_NEXT_IMAGE ||
-             focus.currentField === constants.FOCUS_SUBMIT_BATCH) {
+    else if (getters.currentFieldIndex === constants.FOCUS_NEXT_IMAGE ||
+             getters.currentFieldIndex === constants.FOCUS_SUBMIT_BATCH) {
       document.querySelector(`#${constants.FOCUS_ADD_RECORD} > .btn`).focus();
-      this.store.commit('fieldSetFocus', constants.FOCUS_ADD_RECORD);
+      this.store.dispatch('goToField', constants.FOCUS_ADD_RECORD);
     }
     // go to previous record
-    else if (focus.currentField === 0 &&
-             focus.currentRecord > 0) {
-      this.store.commit('recordSet', focus.currentRecord-1);
+    else if (getters.currentFieldIndex === 0 &&
+             getters.currentRecordIndex > 0) {
+      this.store.dispatch('goToRecord', getters.currentRecordIndex-1);
       document.querySelector(`#${constants.FOCUS_ADD_RECORD} > .btn`).focus();
-      this.store.commit('fieldSetFocus', constants.FOCUS_ADD_RECORD);
+      this.store.dispatch('goToField', constants.FOCUS_ADD_RECORD);
       }
   }
 
   goToImage(imageIndex) {
-    this.store.commit('fieldSetFocus', 0);
-    this.store.commit('recordSet', 0);
-    this.store.commit('imageSet', imageIndex);
+    this.store.dispatch('goToImage', imageIndex);
+    this.store.commit('setCurrentField', 0);
+    this.store.commit('setCurrentRecord', 0);
+    this.store.commit('setCurrentImage', imageIndex);
   }
-
-
 
 }
 

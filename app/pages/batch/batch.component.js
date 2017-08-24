@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-export const IndexingComponent = Vue.component('homeComponent', {
+export const BatchComponent = Vue.component('batch', {
   template:
 `<div class="indexing-wrapper">
     <image-header></image-header>
