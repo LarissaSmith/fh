@@ -1,191 +1,112 @@
 import { FocusService } from './focus.service';
-import * as constants from '../constants';
-import { EventBus } from '../event-bus';
+import * as keyOn from '../utils/key-on';
 
 class _KeyService {
   constructor() {
     this.keyDown = this.keyDown.bind(this);
+  }
+  /**
+   * Set Store
+   * pass in the required instantiated store and start watching keystrokes
+   * @param store
+   */
+  setStore(store) {
+    this.store = store;
+    this.start();
+  }
+
+  /**
+   * Start
+   * watch key strokes
+   */
+  start() {
     document.documentElement.addEventListener('keydown', this.keyDown);
   }
 
-  init(store) {
-    this.store = store;
+  /**
+   * Stop
+   * don't watch key strokes
+   */
+  stop() {
+    document.documentElement.removeEventListener('keydown', this.keyDown);
   }
 
+  /**
+   * Key Down
+   * handle global key strokes
+   * @private
+   * @param e
+   */
   keyDown(e) {
     // prevent italics
-    if (this.isCommandI(e)) {
+    if (keyOn.command_i(e)) {
       e.preventDefault();
     }
 
-    if (this.isTabShift(e)) {
-      e.preventDefault();
-      FocusService.previous();
-    }
-
-    if (this.isTab(e)) {
-      e.preventDefault();
-      FocusService.next();
-    }
-
-    if (this.isCommandArrowUp(e)) {
+    // go to previous field
+    if (keyOn.shift_tab(e)) {
       e.preventDefault();
       FocusService.previous();
     }
 
-    if (this.isCommandArrowDown(e)) {
+    // go to next field
+    if (keyOn.tab(e)) {
       e.preventDefault();
       FocusService.next();
     }
 
-    if (this.isBShift(e)) {
+    if (keyOn.command_arrowUp(e)) {
       e.preventDefault();
-      this.store.commit('setAllFieldProperty', {
-        property: 'blank',
-        value: true
-      });
+      FocusService.previous();
     }
 
-    if (this.isUShift(e)) {
+    if (keyOn.command_arrowDown(e)) {
       e.preventDefault();
-      this.store.commit('setAllFieldProperty', {
-        property: 'unreadable',
-
-      });
+      FocusService.next();
     }
 
-    if (this.isArrowDown(e) || this.isArrowUp(e)) {
+    if (keyOn.shift_b(e)) {
+      e.preventDefault();
+      this.store.commit('setAllFieldProperty', {property: 'blank', value: true});
+    }
+
+    if (keyOn.shift_u(e)) {
+      e.preventDefault();
+      this.store.commit('setAllFieldProperty', {property: 'unreadable', value: true});
+    }
+
+    if (keyOn.arrowDown(e) || keyOn.arrowUp(e)) {
       e.preventDefault();
     }
 
-    if (this.isCommandArrowRight(e)) {
+    if (keyOn.command_arrowRight(e)) {
       e.preventDefault();
-      let recordLength = this.store.state.batch.images[this.store.state.focus.currentImage].records.length;
-      if (this.store.state.focus.currentRecord < recordLength-1) {
-        EventBus.$emit(constants.$$ENTRY_LEAVE);
-        setTimeout(() => this.store.commit('setCurrentRecord', this.store.state.focus.currentRecord+1), 0);
-        setTimeout(() => EventBus.$emit(constants.$$ENTRY_ENTER), 0);
+      let recordLength = this.store.getters.currentImage.records.length;
+      if (this.store.getters.currentRecordIndex < recordLength-1) {
+        this.store.dispatch('goToRecord', this.store.getters.currentRecordIndex+1);
       }
     }
 
-    if (this.isCommandArrowLeft(e)) {
+    if (keyOn.command_arrowLeft(e)) {
       e.preventDefault();
-      if (this.store.state.focus.currentRecord > 0) {
-        EventBus.$emit(constants.$$ENTRY_LEAVE);
-        setTimeout(() => this.store.commit('setCurrentRecord', this.store.state.focus.currentRecord-1), 0);
-        setTimeout(() => EventBus.$emit(constants.$$ENTRY_ENTER), 0);
+      if (this.store.getters.currentRecordIndex > 0) {
+        this.store.dispatch('goToRecord', this.store.getters.currentRecordIndex-1);
       }
     }
 
-    if (this.isCommandShiftArrowRight(e)) {
+    if (keyOn.command_shift_arrowRight(e)) {
       e.preventDefault();
-      if (this.store.state.focus.currentImage < this.store.state.batch  .images.length-1) {
-        EventBus.$emit(constants.$$ENTRY_LEAVE);
-        setTimeout(() => {
-          this.store.commit('setCurrentRecord', 0);
-          this.store.commit('setCurrentField', 0);
-          this.store.commit('setCurrentImage', this.store.state.focus.currentImage+1);
-        }, 0);
-        setTimeout(() => EventBus.$emit(constants.$$ENTRY_ENTER), 0);
+      if (this.store.getters.currentImageIndex < this.store.state.batch  .images.length-1) {
+        this.store.dispatch('goToImage', this.store.getters.currentImageIndex+1);
       }
     }
 
-    if (this.isCommandShiftArrowLeft(e)) {
+    if (keyOn.command_shift_arrowLeft(e)) {
       e.preventDefault();
-      if (this.store.state.focus.currentImage > 0) {
-        EventBus.$emit(constants.$$ENTRY_LEAVE);
-        setTimeout(() => {
-          this.store.commit('setCurrentRecord', 0);
-          this.store.commit('setCurrentField', 0);
-          this.store.commit('setCurrentImage', this.store.state.focus.currentImage-1);
-        }, 0);
-        setTimeout(() => EventBus.$emit(constants.$$ENTRY_ENTER), 0);
+      if (this.store.getters.currentImageIndex > 0) {
+        this.store.dispatch('goToImage', this.store.getters.currentImageIndex-1);
       }
     }
-  }
-
-  isTab(e) {
-    return e.key === 'Tab' && !e.shiftKey;
-  }
-
-  isTabShift(e) {
-    return e.key === 'Tab' && e.shiftKey;
-  }
-
-  isEnter(e) {
-    return e.key === 'Enter';
-  }
-
-  isEscape(e) {
-    return e.key === 'Escape';
-  }
-
-  isCommandI(e) {
-    return e.key === 'i' && !e.shiftKey && (e.ctrlKey || e.metaKey);
-  }
-
-  isCommandB(e) {
-    return e.key === 'b' && !e.shiftKey && (e.ctrlKey || e.metaKey);
-  }
-
-  isBShift(e) {
-    return e.key === 'B' && e.shiftKey && (e.ctrlKey || e.metaKey);
-  }
-
-  isCommandU(e) {
-    return e.key === 'u' && !e.shiftKey && (e.ctrlKey || e.metaKey);
-  }
-
-  isUShift(e) {
-    return e.key === 'U' && e.shiftKey && (e.ctrlKey || e.metaKey);
-  }
-
-  isBackspace(e) {
-    return e.key === 'Backspace' && !e.shiftKey &&  !(e.ctrlKey || e.metaKey);
-  }
-
-  isCommandArrowUp(e) {
-    return e.key === 'ArrowUp' && !e.shiftKey && (e.ctrlKey || e.metaKey);
-  }
-
-  isCommandArrowDown(e) {
-    return e.key === 'ArrowDown' && !e.shiftKey && (e.ctrlKey || e.metaKey);
-  }
-
-  isCommandArrowLeft(e) {
-    return e.key === 'ArrowLeft' && !e.shiftKey && (e.ctrlKey || e.metaKey);
-  }
-
-  isCommandArrowRight(e) {
-    return e.key === 'ArrowRight' && !e.shiftKey && (e.ctrlKey || e.metaKey);
-  }
-
-  isCommandShiftArrowLeft(e) {
-    return e.key === 'ArrowLeft' && e.shiftKey && (e.ctrlKey || e.metaKey);
-  }
-
-  isCommandShiftArrowRight(e) {
-    return e.key === 'ArrowRight' && e.shiftKey && (e.ctrlKey || e.metaKey);
-  }
-
-  isArrowDown(e) {
-    return e.key === 'ArrowDown' && !e.shiftKey && !(e.ctrlKey || e.metaKey);
-  }
-
-  isArrowUp(e) {
-    return e.key === 'ArrowUp' && !e.shiftKey && !(e.ctrlKey || e.metaKey);
-  }
-
-  isCommandShiftBackspace(e) {
-    return e.key === 'Backspace' && e.shiftKey &&  (e.ctrlKey || e.metaKey);
-  }
-
-
-
-
-
-  destroyAllEvents() {
-    document.documentElement.removeEventListener('keydown', this.keyDown);
   }
 }
 

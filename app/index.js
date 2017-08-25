@@ -26,8 +26,8 @@ const appStore = new Vuex.Store(store);
 
 // these services need access to the instantiated store
 // they are init'd before the components are attached to the Vue instance
-KeyService.init(appStore);
-FocusService.init(appStore);
+KeyService.setStore(appStore);
+FocusService.setStore(appStore);
 
 new Vue({
   el: '#app',

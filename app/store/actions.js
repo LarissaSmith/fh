@@ -20,25 +20,26 @@ export const actions = {
   },
 
   goToImage({commit}, imageIndex) {
-    commit('setCurrentImage', {
+    commit('setImageIndex', {
       imageIndex
     });
   },
 
   goToRecord({commit, getters}, recordIndex) {
-    commit('setCurrentRecord', {
+    let fieldIndex = getters.currentFieldIndex;
+    commit('setRecordIndex', {
       recordIndex,
       imageIndex: getters.currentImageIndex
+    });
+    commit('setFieldIndex', {
+      fieldIndex,
+      currentRecordIndex: getters.currentRecordIndex,
+      currentImageIndex: getters.currentImageIndex
     });
   },
 
   goToField({commit, getters}, fieldIndex) {
-    console.log({
-      fieldIndex,
-      currentRecordIndex: getters.currentRecordIndex,
-      currentImageIndex: getters.currentImageIndex
-    })
-    commit('setCurrentField', {
+    commit('setFieldIndex', {
       fieldIndex,
       currentRecordIndex: getters.currentRecordIndex,
       currentImageIndex: getters.currentImageIndex

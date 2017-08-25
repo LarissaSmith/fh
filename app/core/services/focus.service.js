@@ -4,7 +4,7 @@ class _FocusService {
   constructor() {
   }
 
-  init(store) {
+  setStore(store) {
     this.store = store;
   }
 

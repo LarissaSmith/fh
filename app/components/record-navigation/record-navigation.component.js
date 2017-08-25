@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { mapGetters } from 'vuex';
-import { KeyService } from '../../core/services/key.service';
+import * as keyOn from '../../core/utils/key-on';
 
 export const RecordNavigationComponent = Vue.component('recordNavigation', {
   props: ['totalRecords'],
@@ -65,7 +65,7 @@ export const RecordNavigationComponent = Vue.component('recordNavigation', {
       }
     },
     onKeyDown(e) {
-      if (KeyService.isEnter(e)) {
+      if (keyOn.enter(e)) {
         this.$refs.input.blur();
       }
     },

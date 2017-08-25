@@ -50,7 +50,6 @@ export const mutations = {
    */
   setCurrentFieldProperty(state, {currentImageIndex, currentRecordIndex, currentFieldIndex, property, value}) {
     let field = state.batch.images[currentImageIndex].records[currentRecordIndex].fields[currentFieldIndex];
-    console.log('field', field);
     if (property === 'blank') {
       field.blank = value;
       if (field.blank) {
@@ -73,31 +72,30 @@ export const mutations = {
   },
 
   /**
-   * Set Current Field
+   * Set Field Index
    * @param state
-   * @param index
+   * @param {object}
    */
-  setCurrentField(state, {currentImageIndex, currentRecordIndex, fieldIndex}) {
-    console.log(currentImageIndex, currentRecordIndex, fieldIndex)
+  setFieldIndex(state, {currentImageIndex, currentRecordIndex, fieldIndex}) {
     state.batch.images[currentImageIndex].records[currentRecordIndex].currentField = fieldIndex;
   },
 
   /**
-   * Set Record
+   * Set Record Index
    * @param state
    * @param {object}
    */
-  setCurrentRecord(state, {imageIndex, recordIndex}) {
+  setRecordIndex(state, {imageIndex, recordIndex}) {
     state.batch.images[imageIndex].currentRecord = recordIndex;
   },
 
   /**
-   * Set Current Image
+   * Set Image Index
    * @param state
-   * @param index
+   * @param {object}
    */
-  setCurrentImage(state, index) {
-    state.batch.images[state.batch.currentImage] = index;
+  setImageIndex(state, {imageIndex}) {
+    state.batch.currentImage = imageIndex;
   },
 
   recordAddComputed(state, image) {
