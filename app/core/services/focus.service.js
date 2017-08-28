@@ -29,8 +29,7 @@ class _FocusService {
     // go to next record
     else if (getters.currentFieldIndex === constants.FOCUS_ADD_RECORD &&
              getters.currentRecordIndex < getters.currentImage.records.length-1) {
-      this.store.dispatch('goToRecord', getters.currentRecordIndex+1);
-      this.store.dispatch('goToField', getters.currentFieldIndex);
+      this.store.dispatch('goToRecordFirstField', getters.currentRecordIndex+1);
     }
     // go to 'next image'
     else if (getters.currentFieldIndex === constants.FOCUS_ADD_RECORD &&

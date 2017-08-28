@@ -14,7 +14,10 @@ export const EntryFieldTemplate =
             {{dropdown.typeahead[1]}}
         </div>
         <div class="entry-field__input" contenteditable="true" ref="input"></div>
-      <div class="entry-field__overlay" v-show="!inputHasFocus && (fieldobj.blank || fieldobj.unreadable)">{{blankUnreadable(fieldobj.blank, fieldobj.unreadable)}}</div>
+      <div class="entry-field__overlay"
+           v-show="!inputHasFocus && (fieldobj.blank || fieldobj.unreadable)">
+          {{blankUnreadable(fieldobj.blank, fieldobj.unreadable)}}
+      </div>
     </div>
     
     <!--dropdown things-->

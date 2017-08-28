@@ -82,11 +82,11 @@ export const EntryFormComponent = Vue.component('entryForm', {
   methods: {
     selectQuestionBlock(block) {
       setTimeout(() => this.$refs[block].focus(), 0);
-      this.$store.commit('setCurrentField', constants[block]);
+      this.$store.dispatch('goToField', constants[block]);
     },
 
     nextImage() {
-      FocusService.goToImage(this.currentImageIndex+1);
+      this.$store.dispatch('goToImageFirstRecordField', this.currentImageIndex+1);
     },
 
     addRecord() {
