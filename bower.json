@@ -1,0 +1,19 @@
+{
+  "name": "fh",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "tonylefler <tonylefler@gmail.com>"
+  ],
+  "homepage": "https://github.com/geoctrl/fh",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "hf": "https://github.com/fs-webdev/hf.git#^2.5.4"
+  }
+}

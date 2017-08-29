@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import VueRouter from 'vue-router';
+import { VueModalDialog } from 'vue-modal-dialog';
 import { svgSymbols } from './components/icons/svg-symbols';
 
 import 'core-js/es6/promise';
@@ -21,6 +22,7 @@ import * as components from './components';
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
+Vue.use(VueModalDialog);
 
 const appStore = new Vuex.Store(store);
 
@@ -38,5 +40,6 @@ new Vue({
 `<div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0;">
     ${svgSymbols}
     <router-view></router-view>
+    <modal-dialog></modal-dialog>
 </div>`
 });

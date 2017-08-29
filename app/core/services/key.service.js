@@ -46,23 +46,23 @@ class _KeyService {
     // go to previous field
     if (keyOn.shift_tab(e)) {
       e.preventDefault();
-      FocusService.previous();
+      FocusService.previousField();
     }
 
     // go to next field
     if (keyOn.tab(e)) {
       e.preventDefault();
-      FocusService.next();
+      FocusService.nextField();
     }
 
     if (keyOn.command_arrowUp(e)) {
       e.preventDefault();
-      FocusService.previous();
+      FocusService.previousField();
     }
 
     if (keyOn.command_arrowDown(e)) {
       e.preventDefault();
-      FocusService.next();
+      FocusService.nextField();
     }
 
     if (keyOn.shift_b(e)) {
@@ -83,14 +83,14 @@ class _KeyService {
       e.preventDefault();
       let recordLength = this.store.getters.currentImage.records.length;
       if (this.store.getters.currentRecordIndex < recordLength-1) {
-        this.store.dispatch('goToRecord', this.store.getters.currentRecordIndex+1);
+        this.store.dispatch('goToRecordSameField', this.store.getters.currentRecordIndex+1);
       }
     }
 
     if (keyOn.command_arrowLeft(e)) {
       e.preventDefault();
       if (this.store.getters.currentRecordIndex > 0) {
-        this.store.dispatch('goToRecord', this.store.getters.currentRecordIndex-1);
+        this.store.dispatch('goToRecordSameField', this.store.getters.currentRecordIndex-1);
       }
     }
 

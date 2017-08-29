@@ -91,7 +91,7 @@ export const EntryFormComponent = Vue.component('entryForm', {
 
     addRecord() {
       this.$store.dispatch('recordAdd');
-      FocusService.next();
+      FocusService.nextField();
     }
   }
 });

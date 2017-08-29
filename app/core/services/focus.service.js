@@ -1,5 +1,10 @@
 import * as constants from '../constants';
 
+
+/**
+ * Focus Service Class
+ * only put methods in here that need logic before choosing 'focus'
+ */
 class _FocusService {
   constructor() {
   }
@@ -10,10 +15,10 @@ class _FocusService {
 
 
   /**
-   * Global Next
+   * Next Field
    * moves the focus to the next available thing
    */
-  next() {
+  nextField() {
     let getters = this.store.getters;
     let images = this.store.state.batch.images;
 
@@ -47,10 +52,10 @@ class _FocusService {
   }
 
   /**
-   * Global Previous
+   * Previous Field
    * moves the focus to the previous available thing
    */
-  previous() {
+  previousField() {
     let getters = this.store.getters;
 
     // go to previous field
@@ -75,14 +80,6 @@ class _FocusService {
       this.store.dispatch('goToField', constants.FOCUS_ADD_RECORD);
       }
   }
-
-  goToImage(imageIndex) {
-    this.store.dispatch('goToImage', imageIndex);
-    this.store.commit('setCurrentField', 0);
-    this.store.commit('setCurrentRecord', 0);
-    this.store.commit('setCurrentImage', imageIndex);
-  }
-
 }
 
 export const FocusService = new _FocusService();

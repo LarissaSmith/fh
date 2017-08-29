@@ -153,7 +153,7 @@ export const EntryFieldComponent = Vue.component('entryField', {
             this.closeDropdown();
           }
         } else {
-          FocusService.next();
+          FocusService.nextField();
         }
       }
 
@@ -166,13 +166,13 @@ export const EntryFieldComponent = Vue.component('entryField', {
       if (keyOn.command_b(e)) {
         e.preventDefault();
         this.$store.dispatch('setCurrentFieldProperty', {property: 'blank', value: true});
-        FocusService.next();
+        FocusService.nextField();
       }
 
       if (keyOn.command_u(e)) {
         e.preventDefault();
         this.$store.dispatch('setCurrentFieldProperty', {property: 'unreadable', value: true});
-        FocusService.next();
+        FocusService.nextField();
       }
 
       if (keyOn.command_shift_backspace(e)) {
