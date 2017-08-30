@@ -40,7 +40,7 @@ export const HeaderMenuComponent = Vue.component('headerMenu', {
     },
 
     openQualityCheck() {
-      OverlayService.open(QualityCheckComponent, 'quality-check');
+      OverlayService.open(QualityCheckComponent, 'qualityCheck');
     }
   }
 });
