@@ -9,11 +9,11 @@ export const EntryFieldTemplate =
             <span>{{fieldobj.content == ''
                       ? fieldobj.blank || fieldobj.unreadable
                         ? blankUnreadable(fieldobj.blank, fieldobj.unreadable)
-                        : 'Enter Text Here'
+                        : ''
                       : dropdown.typeahead[0]}}</span>
             {{dropdown.typeahead[1]}}
         </div>
-        <div class="entry-field__input" contenteditable="true" ref="input"></div>
+        <div class="entry-field__input" contenteditable ref="input"></div>
       <div class="entry-field__overlay"
            v-show="!inputHasFocus && (fieldobj.blank || fieldobj.unreadable)">
           {{blankUnreadable(fieldobj.blank, fieldobj.unreadable)}}
@@ -22,8 +22,7 @@ export const EntryFieldTemplate =
     
     <!--dropdown things-->
     <button class="btn entry-field__dropdown-btn"
-        @click="toggleDropdown()"
-        v-show="!dropdown.active && showDropdown">
+        @click="toggleDropdown()">
         <span class="caret"></span>
     </button>
     <div class="entry-field__dropdown" v-show="dropdown.active">
