@@ -1,0 +1,48 @@
+.task {
+
+}
+
+.task-main {
+	font-size: 16px;
+	border-bottom: solid 1px #d3d3d3;
+	padding: 12px 10px;
+}
+
+.task-main__number {
+	width: 24px;
+	height: 24px;
+	border-radius: 12px;
+	padding-top: 5px;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+	font-weight: 700;
+	margin-right: 8px;
+	margin-left: 6px;
+	margin-bottom: 2px;
+}
+
+.task-main__title {
+	vertical-align: middle;
+}
+
+.task-main__toggle {
+	float: right;
+}
+
+.task-info {
+	border-bottom: solid 1px #d3d3d3;
+	padding: 10px;
+	background-color: #f3f3f3;
+}
+
+.task.active {
+	.task-main__number {
+		background-color: $color-primary;
+		color: #fff;
+	}
+
+	.task-main__title {
+		font-weight: 500;
+	}
+}
