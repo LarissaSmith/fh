@@ -14,6 +14,7 @@
     "tests"
   ],
   "dependencies": {
-    "hf": "https://github.com/fs-webdev/hf.git#^2.5.4"
+    "hf": "https://github.com/fs-webdev/hf.git#^2.5.4",
+    "fs-deep-zoom": "https://github.com/fs-webdev/fs-deep-zoom.git#0.5.2"
   }
 }

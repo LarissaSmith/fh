@@ -31,9 +31,15 @@
 }
 
 .task-info {
-	border-bottom: solid 1px #d3d3d3;
-	padding: 10px;
 	background-color: #f3f3f3;
+	height: 0px;
+	overflow: hidden;
+	transition: height 500ms;
+
+	.task-info-inner {
+		border-bottom: solid 1px #d3d3d3;
+		padding: 10px;
+	}
 }
 
 .task.active {
@@ -44,5 +50,10 @@
 
 	.task-main__title {
 		font-weight: 500;
+	}
+
+	.task-info {
+		overflow: scroll;
+		height: 100px;
 	}
 }

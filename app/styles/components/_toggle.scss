@@ -1,0 +1,31 @@
+.toggle {
+  width: 46px;
+  height: 25px;
+  position: relative;
+  background-color: red;
+  border: 1px solid grey;
+  border-radius: 20px;
+  transition: background-color 500ms;
+
+  &.toggle-on {
+    background-color: green;
+  }
+
+  &.disabled {
+    opacity: .6;
+  }
+
+  input {
+    border-radius: 20px;
+    position: absolute;
+    left: 0px;
+    height: 100%;
+    width: 23px;
+    appearance: none;
+    transition: left 500ms;
+    background-color: grey;
+    &:checked {
+      left: 23px;
+    }
+  }
+}
